@@ -35,6 +35,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 .login-inp:focus{border-color:var(--t1)}
 .login-btn{width:100%;padding:12px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s;margin-top:4px}
 .login-btn:hover{opacity:.82}
+.login-section-label{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:block}
+.login-report-btn{width:100%;padding:11px;border-radius:var(--rsm);background:var(--surface2);color:var(--t1);font-size:14px;font-weight:500;cursor:pointer;border:.5px solid var(--border-md);font-family:'DM Sans',sans-serif;transition:background .15s;margin-bottom:6px}
+.login-report-btn:hover{background:var(--surface3)}
+.login-report-btn.disabled{opacity:.4;cursor:not-allowed}
+.login-divider{display:flex;align-items:center;gap:12px;margin:18px 0 16px;color:var(--t3);font-size:12px}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:.5px;background:var(--border-md)}
 .login-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;min-height:18px}
 .login-note{font-size:11px;color:var(--t3);text-align:center;margin-top:18px;line-height:1.6}
 
@@ -190,13 +196,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
   <div class="login-card">
     <div class="login-logo">Team Roster</div>
     <div class="login-title">XP HERO</div>
+
+    <!-- 보고서 열람 섹션 -->
+    <div class="login-section-label">보고서 열람</div>
+    <button class="login-report-btn" id="btn-view-report" onclick="openLastReport()">최근 보고서 보기</button>
+    <div class="login-divider"><span>또는 편집자 로그인</span></div>
+
+    <!-- 로그인 섹션 -->
     <label class="login-label">아이디</label>
     <input class="login-inp" id="login-id" type="text" placeholder="ID" autocomplete="username">
     <label class="login-label">비밀번호</label>
     <input class="login-inp" id="login-pw" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">편집 화면 로그인</button>
     <div class="login-err" id="login-err"></div>
-    <div class="login-note">보고서 링크는 로그인 없이<br>누구나 열람할 수 있습니다.</div>
   </div>
 </div>
 
@@ -534,15 +546,45 @@ function confirmAddDept(){
 }
 
 /* ─ Share modal ─ */
+const LAST_REPORT_KEY='xphero_last_report';
 let _shareUrl='';
+
 function openShareModal(){
   syncAll();
   const encoded=encode(S);
   _shareUrl=location.href.split('#')[0]+'#report='+encoded;
+  // Save for "최근 보고서 보기" on login page
+  try{ localStorage.setItem(LAST_REPORT_KEY, _shareUrl); }catch{}
+  updateLoginReportBtn();
   document.getElementById('share-url-box').textContent=_shareUrl;
   document.getElementById('copy-note').textContent='클릭하면 클립보드에 복사됩니다';
   document.getElementById('btn-copy').textContent='링크 복사';
   openModal('modal-share');
+}
+
+function openLastReport(){
+  try{
+    const url=localStorage.getItem(LAST_REPORT_KEY);
+    if(url){ location.href=url; }
+  }catch{}
+}
+
+function updateLoginReportBtn(){
+  const btn=document.getElementById('btn-view-report');
+  if(!btn) return;
+  try{
+    const url=localStorage.getItem(LAST_REPORT_KEY);
+    if(url){
+      btn.classList.remove('disabled');
+      btn.textContent='최근 보고서 보기 →';
+    } else {
+      btn.classList.add('disabled');
+      btn.textContent='보고서 없음 (공유 링크 생성 후 표시)';
+      btn.onclick=null;
+    }
+  }catch{
+    btn.classList.add('disabled');
+  }
 }
 function copyUrl(){
   navigator.clipboard.writeText(_shareUrl).then(()=>{
@@ -575,7 +617,7 @@ function renderReport(data){
         <div class="rp-date">${dateStr} 기준</div>
       </div>
       <div class="rp-actions no-print">
-        <button class="btn-back" onclick="goEditor()">← 편집으로 돌아가기</button>
+        <button class="btn-back" id="rp-back-btn">← 편집으로 돌아가기</button>
         <button class="btn-back" onclick="openShareModal()">🔗 링크 공유</button>
         <button class="btn-print" onclick="window.print()">인쇄 / PDF</button>
       </div>
@@ -652,9 +694,22 @@ function renderReport(data){
 
   document.getElementById('rpage').innerHTML=html;
   document.title=`${data.name} — 팀 인원 구성`;
+
+  // Wire back button based on login state
+  const backBtn=document.getElementById('rp-back-btn');
+  if(backBtn){
+    if(isLoggedIn()){
+      backBtn.textContent='← 편집으로 돌아가기';
+      backBtn.onclick=goEditor;
+    } else {
+      backBtn.textContent='← 로그인';
+      backBtn.onclick=()=>showView('login');
+    }
+  }
 }
 
 /* ─ Init ─ */
+updateLoginReportBtn();
 route();
 if(!location.hash || location.hash==='#'){
   if(!isLoggedIn()) showView('login');
