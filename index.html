@@ -23,6 +23,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 .view.active{display:block}
 
 /* ════════════════════════════
+   LOGIN
+════════════════════════════ */
+#view-login{min-height:100vh;display:none;align-items:center;justify-content:center;background:var(--bg)}
+#view-login.active{display:flex}
+.login-card{background:var(--surface);border:0.5px solid var(--border-md);border-radius:14px;padding:40px 36px 32px;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,0.07)}
+.login-logo{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.login-title{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:28px;color:var(--t1)}
+.login-label{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:block}
+.login-inp{width:100%;font-size:14px;border:0.5px solid var(--border-md);border-radius:var(--rsm);padding:10px 13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;margin-bottom:16px;transition:border-color .15s}
+.login-inp:focus{border-color:var(--t1)}
+.login-btn{width:100%;padding:12px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s;margin-top:4px}
+.login-btn:hover{opacity:.82}
+.login-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;min-height:18px}
+.login-note{font-size:11px;color:var(--t3);text-align:center;margin-top:18px;line-height:1.6}
+
+/* ════════════════════════════
    EDITOR
 ════════════════════════════ */
 .editor-shell{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
@@ -169,6 +185,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 </head>
 <body>
 
+<!-- ══ LOGIN VIEW ══ -->
+<div class="view" id="view-login">
+  <div class="login-card">
+    <div class="login-logo">Team Roster</div>
+    <div class="login-title">XP HERO</div>
+    <label class="login-label">아이디</label>
+    <input class="login-inp" id="login-id" type="text" placeholder="ID" autocomplete="username">
+    <label class="login-label">비밀번호</label>
+    <input class="login-inp" id="login-pw" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">편집 화면 로그인</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-note">보고서 링크는 로그인 없이<br>누구나 열람할 수 있습니다.</div>
+  </div>
+</div>
+
 <!-- ══ EDITOR VIEW ══ -->
 <div class="view" id="view-editor">
   <div class="editor-shell">
@@ -276,23 +307,57 @@ function decode(str){
   catch{ return null; }
 }
 
+/* ─ Auth ─ */
+const AUTH={id:'master',pw:'12345!'};
+const SESSION_KEY='xphero_auth';
+function isLoggedIn(){ return sessionStorage.getItem(SESSION_KEY)==='ok'; }
+
+function doLogin(){
+  const id=document.getElementById('login-id').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const err=document.getElementById('login-err');
+  if(id===AUTH.id && pw===AUTH.pw){
+    sessionStorage.setItem(SESSION_KEY,'ok');
+    err.textContent='';
+    location.hash='editor';
+    showView('editor');
+    renderEditor();
+    addLogoutBtn();
+  } else {
+    err.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';
+    document.getElementById('login-pw').value='';
+    document.getElementById('login-pw').focus();
+  }
+}
+
+function addLogoutBtn(){
+  if(document.getElementById('logout-btn')) return;
+  const footer=document.querySelector('.sb-footer');
+  if(!footer) return;
+  const btn=document.createElement('button');
+  btn.id='logout-btn';
+  btn.className='btn-ghost';
+  btn.style.cssText='color:var(--red);border-color:rgba(139,26,26,.2);font-size:12px';
+  btn.textContent='로그아웃';
+  btn.onclick=()=>{ sessionStorage.removeItem(SESSION_KEY); location.hash=''; showView('login'); };
+  footer.appendChild(btn);
+}
+
 /* ─ URL hash routing ─ */
 function getHash(){
-  const h=location.hash.slice(1); // remove #
-  if(h.startsWith('report=')){
-    return {view:'report', data: decode(h.slice(7))};
-  }
+  const h=location.hash.slice(1);
+  if(h.startsWith('report=')) return {view:'report', data:decode(h.slice(7))};
   if(h==='editor') return {view:'editor'};
   return {view:'editor'};
 }
 
 function goReport(){
   syncAll();
-  const encoded=encode(S);
-  location.hash='report='+encoded;
+  location.hash='report='+encode(S);
 }
 
 function goEditor(){
+  if(!isLoggedIn()){ showView('login'); return; }
   location.hash='editor';
 }
 
@@ -303,13 +368,17 @@ function showView(name){
 
 window.addEventListener('hashchange',route);
 function route(){
-  const {view, data}=getHash();
+  const {view,data}=getHash();
   if(view==='report'){
-    if(!data){ showView('editor'); return; }
+    if(!data){ isLoggedIn()?showView('editor'):showView('login'); return; }
     renderReport(data);
     showView('report');
   } else {
+    // editor requires login
+    if(!isLoggedIn()){ showView('login'); return; }
     showView('editor');
+    renderEditor();
+    addLogoutBtn();
   }
 }
 
@@ -586,8 +655,10 @@ function renderReport(data){
 }
 
 /* ─ Init ─ */
-renderEditor();
 route();
+if(!location.hash || location.hash==='#'){
+  if(!isLoggedIn()) showView('login');
+}
 </script>
 </body>
 </html>
