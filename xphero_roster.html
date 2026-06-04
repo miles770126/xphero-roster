@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XP HERO — 인원 구성</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F4F0;--surface:#FFF;--surface2:#EEEDEA;--surface3:#E4E3DF;
+  --border:rgba(0,0,0,0.08);--border-md:rgba(0,0,0,0.14);
+  --t1:#111110;--t2:#5C5B58;--t3:#9A9994;
+  --green:#2D6A4F;--green-bg:#D8F3DC;
+  --amber:#7A5000;--amber-bg:#FEF3C7;
+  --red:#8B1A1A;--red-bg:#FEE2E2;
+  --r:10px;--rsm:7px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:14px;line-height:1.6}
+
+/* ─ Views ─ */
+.view{display:none}
+.view.active{display:block}
+
+/* ════════════════════════════
+   EDITOR
+════════════════════════════ */
+.editor-shell{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
+
+/* Sidebar */
+.sb{background:var(--surface);border-right:0.5px solid var(--border-md);padding:28px 18px;display:flex;flex-direction:column;gap:5px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-logo{font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-bottom:18px;padding-bottom:18px;border-bottom:0.5px solid var(--border)}
+.sb-logo small{font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--t3);display:block;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:var(--rsm);cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);background:none;border:none;width:100%;text-align:left;transition:background .15s;font-family:'DM Sans',sans-serif}
+.nav-btn:hover{background:var(--surface2)}
+.nav-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);min-width:18px}
+.nav-lbl{flex:1}
+.nav-cnt{font-size:10px;font-family:'DM Mono',monospace;background:var(--surface2);color:var(--t3);padding:2px 7px;border-radius:99px}
+.sb-footer{margin-top:auto;padding-top:18px;border-top:0.5px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.btn-primary{width:100%;padding:11px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.btn-primary:hover{opacity:.82}
+.btn-ghost{width:100%;padding:9px;border-radius:var(--rsm);background:none;color:var(--t2);font-size:13px;cursor:pointer;border:0.5px dashed var(--border-md);font-family:'DM Sans',sans-serif;transition:background .15s}
+.btn-ghost:hover{background:var(--surface2)}
+
+/* Editor main */
+.ed-main{padding:40px 44px;max-width:800px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.project-inp{font-size:28px;font-weight:600;letter-spacing:-.02em;border:none;background:transparent;color:var(--t1);font-family:'DM Sans',sans-serif;width:100%;outline:none;border-bottom:2px solid transparent;padding:2px 0;margin-bottom:28px;transition:border-color .15s}
+.project-inp:focus{border-bottom-color:var(--t1)}
+
+/* Summary strip */
+.sum-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:32px}
+.sc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.sc-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.sc-val{font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.sc-val.g{color:var(--green)}
+.sc-val.a{color:var(--amber)}
+
+/* Dept card */
+.dc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.dc-head{display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:0.5px solid var(--border)}
+.dc-idx{width:32px;height:32px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;flex-shrink:0}
+.dc-name-inp{font-size:15px;font-weight:600;border:none;background:transparent;color:var(--t1);font-family:'DM Sans',sans-serif;flex:1;outline:none;letter-spacing:-.01em;min-width:0}
+.dc-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.target-grp{display:flex;align-items:center;gap:5px}
+.tgt-lbl{font-size:12px;color:var(--t3)}
+.tgt-inp{width:50px;text-align:center;font-size:13px;font-weight:500;font-family:'DM Mono',monospace;border:0.5px solid var(--border-md);border-radius:var(--rsm);padding:4px 5px;background:var(--surface2);color:var(--t1);outline:none}
+.tgt-inp:focus{border-color:var(--t1)}
+.pill{font-size:11px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:99px;white-space:nowrap;font-weight:500}
+.pg{background:var(--green-bg);color:var(--green)}
+.pa{background:var(--amber-bg);color:var(--amber)}
+.pn{background:var(--surface2);color:var(--t2)}
+.icon-btn{width:27px;height:27px;border:none;background:none;cursor:pointer;border-radius:var(--rsm);color:var(--t3);font-size:15px;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.icon-btn:hover{background:var(--red-bg);color:var(--red)}
+
+/* Member rows */
+.dc-body{padding:10px 18px 14px}
+.mrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border)}
+.mrow:last-of-type{border-bottom:none}
+.av{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.m-name-inp{flex:1;min-width:70px;font-size:13px;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--t1);outline:none;padding:2px 0}
+.m-name-inp::placeholder{color:var(--t3)}
+.m-role-inp{flex:2;font-size:12px;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--t2);outline:none;padding:2px 0}
+.m-role-inp::placeholder{color:var(--t3)}
+.divv{width:.5px;height:13px;background:var(--border-md);flex-shrink:0}
+.add-member-btn{width:100%;margin-top:9px;padding:7px;border-radius:var(--rsm);border:0.5px dashed var(--border-md);background:none;color:var(--t3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.add-member-btn:hover{background:var(--surface2);color:var(--t1)}
+
+/* ════════════════════════════
+   REPORT
+════════════════════════════ */
+#view-report{background:var(--bg);padding:56px 24px 80px;min-height:100vh}
+.rpage{max-width:880px;margin:0 auto}
+.rp-header{margin-bottom:44px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+.rp-title{font-size:38px;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+.rp-date{font-size:13px;color:var(--t3);margin-top:8px}
+.rp-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.btn-back{font-size:12px;font-family:'DM Mono',monospace;padding:7px 13px;border-radius:var(--rsm);border:.5px solid var(--border-md);background:var(--surface);color:var(--t2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.btn-back:hover{background:var(--surface2)}
+.btn-print{font-size:13px;padding:8px 16px;border-radius:var(--rsm);border:none;background:var(--t1);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.btn-print:hover{opacity:.82}
+.rsum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px}
+.rsc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:20px 22px}
+.rsc-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.rsc-val{font-size:32px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.rsc-val.g{color:var(--green)}
+.rsc-val.a{color:var(--amber)}
+.rsc-sub{font-size:12px;color:var(--t3);margin-top:5px}
+.prog-wrap{margin-bottom:40px}
+.prog-track{height:5px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:var(--t1);border-radius:99px;transition:width 1s cubic-bezier(.16,1,.3,1)}
+.prog-meta{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--t3)}
+.sec-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
+.ov-table{width:100%;border-collapse:collapse;margin-bottom:40px;background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.ov-table th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:11px 15px;text-align:left;border-bottom:.5px solid var(--border);font-weight:400}
+.ov-table td{padding:11px 15px;border-bottom:.5px solid var(--border);font-size:13px;vertical-align:middle}
+.ov-table tr:last-child td{border-bottom:none}
+.ov-table tbody tr:hover td{background:var(--surface2)}
+.mini-wrap{display:flex;align-items:center;gap:8px}
+.mini-track{flex:1;height:4px;background:var(--surface2);border-radius:99px;overflow:hidden;min-width:60px}
+.mini-fill{height:100%;background:var(--t1);border-radius:99px}
+.mini-pct{font-size:11px;font-family:'DM Mono',monospace;color:var(--t3);min-width:32px;text-align:right}
+.dept-sec{margin-bottom:34px}
+.dept-sec-head{display:flex;align-items:center;gap:11px;margin-bottom:13px;padding-bottom:13px;border-bottom:.5px solid var(--border)}
+.dsec-idx{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);min-width:22px}
+.dsec-name{font-size:17px;font-weight:600;letter-spacing:-.01em;flex:1}
+.dsec-pills{display:flex;gap:6px;flex-wrap:wrap}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:8px}
+.mcard{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rsm);padding:11px 13px;display:flex;align-items:center;gap:10px}
+.mcard.slot{border-style:dashed;background:transparent;opacity:.38}
+.mav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.minfo{min-width:0}
+.mname{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrole{font-size:11px;color:var(--t3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rfooter{margin-top:56px;padding-top:22px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.rfooter-note{font-size:12px;color:var(--t3)}
+.rfooter-badge{font-family:'DM Mono',monospace;font-size:10px;background:var(--surface2);color:var(--t3);padding:4px 10px;border-radius:99px;letter-spacing:.06em}
+
+/* ─ Modal ─ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border-radius:var(--r);padding:26px 26px 22px;width:90%;max-width:480px;box-shadow:0 24px 64px rgba(0,0,0,.14)}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:16px;letter-spacing:-.01em}
+.modal-lbl{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.modal-inp{width:100%;font-size:14px;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:9px 12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;margin-bottom:14px}
+.modal-inp:focus{border-color:var(--t1)}
+.modal-row{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.btn-cancel{padding:8px 16px;border:.5px solid var(--border-md);border-radius:var(--rsm);background:none;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--t2)}
+.btn-ok{padding:8px 16px;border:none;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.url-box{width:100%;font-size:12px;font-family:'DM Mono',monospace;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:10px 12px;background:var(--surface2);color:var(--t2);word-break:break-all;margin-bottom:12px;line-height:1.7;max-height:90px;overflow-y:auto;white-space:pre-wrap}
+.copy-note{font-size:11px;color:var(--t3);text-align:center;margin-top:9px}
+
+/* Print */
+@media print{
+  #view-editor,#view-editor *,.rp-actions,.no-print{display:none!important}
+  #view-report{padding:0}
+  body{background:#fff}
+}
+@media(max-width:640px){
+  .editor-shell{grid-template-columns:1fr}
+  .sb{position:static;height:auto}
+  .ed-main{padding:22px 16px}
+  .sum-strip,.rsum{grid-template-columns:1fr 1fr}
+  .rp-title{font-size:26px}
+  .mgrid{grid-template-columns:1fr 1fr}
+  .ov-table{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ EDITOR VIEW ══ -->
+<div class="view" id="view-editor">
+  <div class="editor-shell">
+    <aside class="sb">
+      <div class="sb-logo"><small>Team Roster</small><span id="sb-project-name">XP HERO</span></div>
+      <div id="sb-nav"></div>
+      <div class="sb-footer">
+        <button class="btn-ghost" onclick="openAddDept()">+ 팀 추가</button>
+        <button class="btn-primary" onclick="goReport()">보고서 보기 →</button>
+      </div>
+    </aside>
+    <main class="ed-main">
+      <div class="eyebrow">Team Roster Editor</div>
+      <input class="project-inp" id="project-inp" value="XP HERO" placeholder="프로젝트 명" oninput="onProjectName()">
+      <div class="sum-strip">
+        <div class="sc"><div class="sc-lbl">목표 인원</div><div class="sc-val" id="e-target">—</div></div>
+        <div class="sc"><div class="sc-lbl">현재 인원</div><div class="sc-val g" id="e-current">—</div></div>
+        <div class="sc"><div class="sc-lbl">추가 필요</div><div class="sc-val a" id="e-add">—</div></div>
+      </div>
+      <div id="dept-list"></div>
+    </main>
+  </div>
+</div>
+
+<!-- ══ REPORT VIEW ══ -->
+<div class="view" id="view-report">
+  <div class="rpage" id="rpage"></div>
+</div>
+
+<!-- Add dept modal -->
+<div class="overlay" id="modal-dept">
+  <div class="modal">
+    <div class="modal-title">새 팀 추가</div>
+    <div class="modal-lbl">팀 이름</div>
+    <input class="modal-inp" id="m-dept-name" placeholder="예: QA, 사운드">
+    <div class="modal-lbl">목표 인원</div>
+    <input class="modal-inp" id="m-dept-target" type="number" min="1" value="5">
+    <div class="modal-row">
+      <button class="btn-cancel" onclick="closeModal('modal-dept')">취소</button>
+      <button class="btn-ok" onclick="confirmAddDept()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share modal -->
+<div class="overlay" id="modal-share">
+  <div class="modal">
+    <div class="modal-title">공유 링크</div>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6">아래 링크를 복사해서 공유하세요.<br>링크 안에 모든 데이터가 포함되어 있어 서버 없이 열립니다.</p>
+    <div class="url-box" id="share-url-box"></div>
+    <button class="btn-ok" style="width:100%;padding:10px" id="btn-copy" onclick="copyUrl()">링크 복사</button>
+    <div class="copy-note" id="copy-note">클릭하면 클립보드에 복사됩니다</div>
+  </div>
+</div>
+
+<script>
+/* ─ Palette ─ */
+const PAL=[
+  {bg:'#D8F3DC',fg:'#2D6A4F'},
+  {bg:'#DBEAFE',fg:'#1A4F8A'},
+  {bg:'#EDE9FE',fg:'#4C1D95'},
+  {bg:'#FEF3C7',fg:'#7A5000'},
+  {bg:'#FFE4E6',fg:'#9F1239'},
+  {bg:'#CCFBF1',fg:'#0D5A47'},
+  {bg:'#FEE2E2',fg:'#8B1A1A'},
+];
+const pal=i=>PAL[i%PAL.length];
+const ini=s=>(s||'').trim().slice(0,2).toUpperCase()||'??';
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const uid=()=>Math.random().toString(36).slice(2,8);
+
+/* ─ State ─ */
+let S={
+  name:'XP HERO',
+  depts:[
+    {id:'pd',  name:'PD',       target:1,  members:[{name:'(PD)',role:'프로젝트 총괄'}]},
+    {id:'plan',name:'기획',      target:7,  members:[
+      {name:'라이언',role:'수익화 및 지표'},
+      {name:'웨이드',role:'컨텐츠 및 버전 관리'},
+      {name:'디뉴',  role:'컨텐츠'},
+      {name:'데빈',  role:'전투 및 밸런스'},
+      {name:'틴틴',  role:'라이브옵스 이벤트 및 수익화'},
+    ]},
+    {id:'dev', name:'개발',      target:10, members:[
+      {name:'라스',  role:'개발팀 리드'},
+      {name:'타이드',role:''},{name:'민즈',role:''},{name:'플라워',role:''},{name:'저니',role:''},{name:'라니',role:''},
+    ]},
+    {id:'art', name:'아트 (3D)', target:7,  members:[
+      {name:'리즈',  role:'아트팀 리드'},
+      {name:'월터',role:''},{name:'마루',role:''},{name:'제이수',role:''},{name:'써니',role:''},{name:'샐리',role:''},
+    ]},
+    {id:'ui',  name:'UI (2D)',   target:5,  members:[
+      {name:'아스카',role:'UI 리드'},
+      {name:'에리카',role:''},
+    ]},
+  ]
+};
+
+/* ─ Encode / Decode ─ */
+function encode(obj){
+  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+function decode(str){
+  try{ return JSON.parse(decodeURIComponent(escape(atob(str)))); }
+  catch{ return null; }
+}
+
+/* ─ URL hash routing ─ */
+function getHash(){
+  const h=location.hash.slice(1); // remove #
+  if(h.startsWith('report=')){
+    return {view:'report', data: decode(h.slice(7))};
+  }
+  if(h==='editor') return {view:'editor'};
+  return {view:'editor'};
+}
+
+function goReport(){
+  syncAll();
+  const encoded=encode(S);
+  location.hash='report='+encoded;
+}
+
+function goEditor(){
+  location.hash='editor';
+}
+
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+}
+
+window.addEventListener('hashchange',route);
+function route(){
+  const {view, data}=getHash();
+  if(view==='report'){
+    if(!data){ showView('editor'); return; }
+    renderReport(data);
+    showView('report');
+  } else {
+    showView('editor');
+  }
+}
+
+/* ─ Sync inputs → state ─ */
+function syncAll(){
+  S.name=document.getElementById('project-inp').value;
+  S.depts.forEach(dept=>{
+    const ni=document.querySelector(`[data-dn="${dept.id}"]`);
+    const ti=document.querySelector(`[data-dt="${dept.id}"]`);
+    if(ni) dept.name=ni.value;
+    if(ti) dept.target=parseInt(ti.value)||0;
+    dept.members.forEach((m,mi)=>{
+      const nn=document.querySelector(`[data-mn="${dept.id}-${mi}"]`);
+      const nr=document.querySelector(`[data-mr="${dept.id}-${mi}"]`);
+      if(nn) m.name=nn.value;
+      if(nr) m.role=nr.value;
+    });
+  });
+}
+
+/* ─ Stats ─ */
+function stats(){
+  let t=0,c=0;
+  S.depts.forEach(d=>{t+=d.target;c+=d.members.length});
+  return{t,c,add:Math.max(0,t-c)};
+}
+
+/* ─ Editor render ─ */
+function renderEditor(){
+  const {t,c,add}=stats();
+  document.getElementById('e-target').textContent=t+'명';
+  document.getElementById('e-current').textContent=c+'명';
+  document.getElementById('e-add').textContent='+'+add+'명';
+  document.getElementById('sb-project-name').textContent=S.name||'XP HERO';
+
+  // Nav
+  const nav=document.getElementById('sb-nav');
+  nav.innerHTML='';
+  S.depts.forEach((d,di)=>{
+    const b=document.createElement('button');
+    b.className='nav-btn';
+    b.innerHTML=`<span class="nav-num">${String(di+1).padStart(2,'0')}</span><span class="nav-lbl">${esc(d.name)}</span><span class="nav-cnt">${d.members.length}/${d.target}</span>`;
+    b.onclick=()=>document.getElementById('s-'+d.id)?.scrollIntoView({behavior:'smooth',block:'start'});
+    nav.appendChild(b);
+  });
+
+  // Dept cards
+  const list=document.getElementById('dept-list');
+  list.innerHTML='';
+  S.depts.forEach((d,di)=>{
+    const p=pal(di);
+    const need=Math.max(0,d.target-d.members.length);
+    const card=document.createElement('div');
+    card.className='dc'; card.id='s-'+d.id;
+
+    // Header
+    const hd=document.createElement('div');
+    hd.className='dc-head';
+    hd.innerHTML=`
+      <div class="dc-idx" style="background:${p.bg};color:${p.fg}">${String(di+1).padStart(2,'0')}</div>
+      <input class="dc-name-inp" data-dn="${d.id}" value="${esc(d.name)}" placeholder="팀 이름" oninput="onFieldChange()">
+      <div class="dc-right">
+        <div class="target-grp">
+          <span class="tgt-lbl">목표</span>
+          <input class="tgt-inp" type="number" min="0" data-dt="${d.id}" value="${d.target}" oninput="onFieldChange()">
+          <span class="tgt-lbl">명</span>
+        </div>
+        <span class="pill ${need>0?'pa':'pg'}">${need>0?'+'+need+'명 필요':'충원 완료'}</span>
+        <button class="icon-btn" onclick="removeDept('${d.id}')" title="팀 삭제">✕</button>
+      </div>`;
+    card.appendChild(hd);
+
+    // Body
+    const body=document.createElement('div');
+    body.className='dc-body';
+    d.members.forEach((m,mi)=>{
+      const row=document.createElement('div');
+      row.className='mrow';
+      row.innerHTML=`
+        <div class="av" style="background:${p.bg};color:${p.fg}" id="av-${d.id}-${mi}">${ini(m.name)}</div>
+        <input class="m-name-inp" data-mn="${d.id}-${mi}" value="${esc(m.name)}" placeholder="이름" oninput="onNameInput(this,'${d.id}',${mi})">
+        <div class="divv"></div>
+        <input class="m-role-inp" data-mr="${d.id}-${mi}" value="${esc(m.role)}" placeholder="담당 업무 (선택)">
+        <button class="icon-btn" onclick="removeMember('${d.id}',${mi})" title="삭제">✕</button>`;
+      body.appendChild(row);
+    });
+    const addBtn=document.createElement('button');
+    addBtn.className='add-member-btn';
+    addBtn.textContent='+ 멤버 추가';
+    addBtn.onclick=()=>addMember(d.id);
+    body.appendChild(addBtn);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+}
+
+function onFieldChange(){
+  syncAll();
+  const {t,c,add}=stats();
+  document.getElementById('e-target').textContent=t+'명';
+  document.getElementById('e-current').textContent=c+'명';
+  document.getElementById('e-add').textContent='+'+add+'명';
+  // update nav
+  const btns=document.querySelectorAll('#sb-nav .nav-btn');
+  S.depts.forEach((d,di)=>{
+    const cnt=btns[di]?.querySelector('.nav-cnt');
+    if(cnt) cnt.textContent=`${d.members.length}/${d.target}`;
+  });
+}
+
+function onProjectName(){
+  S.name=document.getElementById('project-inp').value;
+  document.getElementById('sb-project-name').textContent=S.name||'XP HERO';
+}
+
+function onNameInput(inp,deptId,mi){
+  const av=document.getElementById(`av-${deptId}-${mi}`);
+  if(av) av.textContent=ini(inp.value);
+}
+
+/* ─ Actions ─ */
+function addMember(deptId){
+  syncAll();
+  S.depts.find(d=>d.id===deptId).members.push({name:'',role:''});
+  renderEditor();
+  const rows=document.querySelectorAll(`#s-${deptId} .mrow`);
+  rows[rows.length-1]?.querySelector('input')?.focus();
+}
+function removeMember(deptId,mi){
+  syncAll();
+  S.depts.find(d=>d.id===deptId).members.splice(mi,1);
+  renderEditor();
+}
+function removeDept(deptId){
+  syncAll();
+  S.depts=S.depts.filter(d=>d.id!==deptId);
+  renderEditor();
+}
+function openAddDept(){
+  document.getElementById('m-dept-name').value='';
+  document.getElementById('m-dept-target').value='5';
+  openModal('modal-dept');
+  setTimeout(()=>document.getElementById('m-dept-name').focus(),120);
+}
+function confirmAddDept(){
+  const name=document.getElementById('m-dept-name').value.trim();
+  const target=parseInt(document.getElementById('m-dept-target').value)||5;
+  if(!name) return;
+  syncAll();
+  S.depts.push({id:uid(),name,target,members:[]});
+  closeModal('modal-dept');
+  renderEditor();
+}
+
+/* ─ Share modal ─ */
+let _shareUrl='';
+function openShareModal(){
+  syncAll();
+  const encoded=encode(S);
+  _shareUrl=location.href.split('#')[0]+'#report='+encoded;
+  document.getElementById('share-url-box').textContent=_shareUrl;
+  document.getElementById('copy-note').textContent='클릭하면 클립보드에 복사됩니다';
+  document.getElementById('btn-copy').textContent='링크 복사';
+  openModal('modal-share');
+}
+function copyUrl(){
+  navigator.clipboard.writeText(_shareUrl).then(()=>{
+    document.getElementById('btn-copy').textContent='✓ 복사됨!';
+    document.getElementById('copy-note').textContent='링크가 클립보드에 복사되었습니다';
+  }).catch(()=>{
+    document.getElementById('copy-note').textContent='직접 선택 후 복사해 주세요';
+  });
+}
+
+/* ─ Modal helpers ─ */
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id)}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>closeModal(el.id))});
+
+/* ─ Report render ─ */
+function renderReport(data){
+  let t=0,c=0;
+  data.depts.forEach(d=>{t+=d.target;c+=d.members.length});
+  const add=Math.max(0,t-c);
+  const pct=t>0?Math.round(c/t*100):0;
+  const dateStr=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric'}).format(new Date());
+
+  let html=`
+    <div class="rp-header">
+      <div>
+        <div class="eyebrow">Team Roster Report</div>
+        <div class="rp-title">${esc(data.name)}</div>
+        <div class="rp-date">${dateStr} 기준</div>
+      </div>
+      <div class="rp-actions no-print">
+        <button class="btn-back" onclick="goEditor()">← 편집으로 돌아가기</button>
+        <button class="btn-back" onclick="openShareModal()">🔗 링크 공유</button>
+        <button class="btn-print" onclick="window.print()">인쇄 / PDF</button>
+      </div>
+    </div>
+    <div class="rsum">
+      <div class="rsc"><div class="rsc-lbl">목표 인원</div><div class="rsc-val">${t}<span style="font-size:17px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">전체 팀 목표</div></div>
+      <div class="rsc"><div class="rsc-lbl">현재 인원</div><div class="rsc-val g">${c}<span style="font-size:17px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">확보된 인원</div></div>
+      <div class="rsc"><div class="rsc-lbl">추가 필요</div><div class="rsc-val a">+${add}<span style="font-size:17px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">충원 필요 인원</div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <div class="prog-meta"><span>팀 구성 진행률</span><span>${c} / ${t}명 (${pct}%)</span></div>
+    </div>
+
+    <div class="sec-lbl">팀별 현황</div>
+    <table class="ov-table">
+      <thead><tr><th>#</th><th>팀</th><th>목표</th><th>현재</th><th>충원 필요</th><th style="min-width:130px">진행률</th></tr></thead>
+      <tbody>`;
+
+  data.depts.forEach((d,di)=>{
+    const cur=d.members.length;
+    const need=Math.max(0,d.target-cur);
+    const p=d.target>0?Math.round(cur/d.target*100):100;
+    html+=`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">${String(di+1).padStart(2,'0')}</td>
+      <td style="font-weight:500">${esc(d.name)}</td>
+      <td style="font-family:'DM Mono',monospace">${d.target}명</td>
+      <td><span class="pill pg">${cur}명</span></td>
+      <td>${need>0?`<span class="pill pa">+${need}명</span>`:`<span class="pill pn">완료</span>`}</td>
+      <td><div class="mini-wrap"><div class="mini-track"><div class="mini-fill" style="width:${p}%"></div></div><span class="mini-pct">${p}%</span></div></td>
+    </tr>`;
+  });
+  html+=`</tbody></table>
+
+    <div class="sec-lbl">멤버 상세</div>`;
+
+  data.depts.forEach((d,di)=>{
+    const p=pal(di);
+    const cur=d.members.length;
+    const need=Math.max(0,d.target-cur);
+    html+=`<div class="dept-sec">
+      <div class="dept-sec-head">
+        <span class="dsec-idx">${String(di+1).padStart(2,'0')}</span>
+        <span class="dsec-name">${esc(d.name)}</span>
+        <div class="dsec-pills">
+          <span class="pill pn">목표 ${d.target}명</span>
+          <span class="pill pg">현재 ${cur}명</span>
+          ${need>0?`<span class="pill pa">+${need}명 필요</span>`:''}
+        </div>
+      </div>
+      <div class="mgrid">`;
+    d.members.forEach(m=>{
+      html+=`<div class="mcard">
+        <div class="mav" style="background:${p.bg};color:${p.fg}">${ini(m.name)}</div>
+        <div class="minfo">
+          <div class="mname">${esc(m.name)||'—'}</div>
+          ${m.role?`<div class="mrole">${esc(m.role)}</div>`:''}
+        </div>
+      </div>`;
+    });
+    for(let i=0;i<need;i++){
+      html+=`<div class="mcard slot">
+        <div class="mav" style="background:var(--surface2);color:var(--t3)">—</div>
+        <div class="minfo"><div class="mname" style="color:var(--t3)">충원 예정</div></div>
+      </div>`;
+    }
+    html+=`</div></div>`;
+  });
+
+  html+=`<div class="rfooter">
+    <span class="rfooter-note">${esc(data.name)} 팀 인원 구성 현황 · ${dateStr}</span>
+    <span class="rfooter-badge">CONFIDENTIAL</span>
+  </div>`;
+
+  document.getElementById('rpage').innerHTML=html;
+  document.title=`${data.name} — 팀 인원 구성`;
+}
+
+/* ─ Init ─ */
+renderEditor();
+route();
+</script>
+</body>
+</html>
