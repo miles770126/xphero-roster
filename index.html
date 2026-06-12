@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XP HERO — 인원 구성</title>
+<title>XP HERO — 인원관리</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -13,230 +13,389 @@
   --green:#2D6A4F;--green-bg:#D8F3DC;
   --amber:#7A5000;--amber-bg:#FEF3C7;
   --red:#8B1A1A;--red-bg:#FEE2E2;
+  --blue:#1A4F8A;--blue-bg:#DBEAFE;
+  --la:#1A4F8A;--la-bg:#DBEAFE;
+  --lh:#2D6A4F;--lh-bg:#D8F3DC;
+  --lt:#7A5000;--lt-bg:#FEF3C7;
   --r:10px;--rsm:7px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:14px;line-height:1.6}
 
-/* ─ Views ─ */
-.view{display:none}
-.view.active{display:block}
-
-/* ════════════════════════════
-   LOGIN
-════════════════════════════ */
+/* ── Views ── */
+.view{display:none}.view.active{display:block}
 #view-login{min-height:100vh;display:none;align-items:center;justify-content:center;background:var(--bg)}
 #view-login.active{display:flex}
-.login-card{background:var(--surface);border:0.5px solid var(--border-md);border-radius:14px;padding:40px 36px 32px;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,0.07)}
-.login-logo{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
-.login-title{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:28px;color:var(--t1)}
-.login-label{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:block}
-.login-inp{width:100%;font-size:14px;border:0.5px solid var(--border-md);border-radius:var(--rsm);padding:10px 13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;margin-bottom:16px;transition:border-color .15s}
-.login-inp:focus{border-color:var(--t1)}
-.login-btn{width:100%;padding:12px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s;margin-top:4px}
-.login-btn:hover{opacity:.82}
-.login-section-label{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:block}
-.login-report-btn{width:100%;padding:11px;border-radius:var(--rsm);background:var(--surface2);color:var(--t1);font-size:14px;font-weight:500;cursor:pointer;border:.5px solid var(--border-md);font-family:'DM Sans',sans-serif;transition:background .15s;margin-bottom:6px}
-.login-report-btn:hover{background:var(--surface3)}
-.login-report-btn.disabled{opacity:.4;cursor:not-allowed}
-.login-divider{display:flex;align-items:center;gap:12px;margin:18px 0 16px;color:var(--t3);font-size:12px}
-.login-divider::before,.login-divider::after{content:'';flex:1;height:.5px;background:var(--border-md)}
-.login-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;min-height:18px}
-.login-note{font-size:11px;color:var(--t3);text-align:center;margin-top:18px;line-height:1.6}
 
-/* ════════════════════════════
-   EDITOR
-════════════════════════════ */
-.editor-shell{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
-
-/* Sidebar */
-.sb{background:var(--surface);border-right:0.5px solid var(--border-md);padding:28px 18px;display:flex;flex-direction:column;gap:5px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.sb-logo{font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-bottom:18px;padding-bottom:18px;border-bottom:0.5px solid var(--border)}
-.sb-logo small{font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--t3);display:block;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px}
-.nav-btn{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:var(--rsm);cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);background:none;border:none;width:100%;text-align:left;transition:background .15s;font-family:'DM Sans',sans-serif}
+/* ── App shell (shared) ── */
+.app-shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.sb{background:var(--surface);border-right:.5px solid var(--border-md);padding:22px 15px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-top{margin-bottom:16px;padding-bottom:16px;border-bottom:.5px solid var(--border)}
+.sb-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.sb-title{font-size:15px;font-weight:600;letter-spacing:-.02em}
+.sb-section{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:12px 10px 5px}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--rsm);cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);background:none;border:none;width:100%;text-align:left;transition:background .15s;font-family:'DM Sans',sans-serif}
 .nav-btn:hover{background:var(--surface2)}
-.nav-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);min-width:18px}
+.nav-btn.active{background:var(--t1);color:#fff}
+.nav-btn.active .nav-cnt,.nav-btn.active .nav-icon{color:rgba(255,255,255,.7)}
+.nav-icon{font-size:14px;width:18px;text-align:center}
 .nav-lbl{flex:1}
-.nav-cnt{font-size:10px;font-family:'DM Mono',monospace;background:var(--surface2);color:var(--t3);padding:2px 7px;border-radius:99px}
-.sb-footer{margin-top:auto;padding-top:18px;border-top:0.5px solid var(--border);display:flex;flex-direction:column;gap:8px}
-.btn-primary{width:100%;padding:11px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.nav-cnt{font-size:10px;font-family:'DM Mono',monospace;background:var(--surface2);color:var(--t3);padding:2px 6px;border-radius:99px}
+.sb-footer{margin-top:auto;padding-top:14px;border-top:.5px solid var(--border);display:flex;flex-direction:column;gap:6px}
+.btn-primary{width:100%;padding:10px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s}
 .btn-primary:hover{opacity:.82}
-.btn-ghost{width:100%;padding:9px;border-radius:var(--rsm);background:none;color:var(--t2);font-size:13px;cursor:pointer;border:0.5px dashed var(--border-md);font-family:'DM Sans',sans-serif;transition:background .15s}
+.btn-ghost{width:100%;padding:8px;border-radius:var(--rsm);background:none;color:var(--t2);font-size:12px;cursor:pointer;border:.5px dashed var(--border-md);font-family:'DM Sans',sans-serif;transition:background .15s}
 .btn-ghost:hover{background:var(--surface2)}
+.btn-admin{width:100%;padding:8px;border-radius:var(--rsm);background:none;color:var(--t3);font-size:11px;cursor:pointer;border:.5px solid var(--border);font-family:'DM Mono',monospace;letter-spacing:.04em;transition:all .15s}
+.btn-admin:hover{background:var(--surface2);color:var(--t2)}
 
-/* Editor main */
-.ed-main{padding:40px 44px;max-width:800px}
-.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
-.project-inp{font-size:28px;font-weight:600;letter-spacing:-.02em;border:none;background:transparent;color:var(--t1);font-family:'DM Sans',sans-serif;width:100%;outline:none;border-bottom:2px solid transparent;padding:2px 0;margin-bottom:28px;transition:border-color .15s}
-.project-inp:focus{border-bottom-color:var(--t1)}
-
-/* Summary strip */
-.sum-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:32px}
-.sc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:16px 18px}
-.sc-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
-.sc-val{font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1}
-.sc-val.g{color:var(--green)}
-.sc-val.a{color:var(--amber)}
-
-/* Dept card */
-.dc{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
-.dc-head{display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:0.5px solid var(--border)}
-.dc-idx{width:32px;height:32px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;flex-shrink:0}
-.dc-name-inp{font-size:15px;font-weight:600;border:none;background:transparent;color:var(--t1);font-family:'DM Sans',sans-serif;flex:1;outline:none;letter-spacing:-.01em;min-width:0}
-.dc-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.target-grp{display:flex;align-items:center;gap:5px}
-.tgt-lbl{font-size:12px;color:var(--t3)}
-.tgt-inp{width:50px;text-align:center;font-size:13px;font-weight:500;font-family:'DM Mono',monospace;border:0.5px solid var(--border-md);border-radius:var(--rsm);padding:4px 5px;background:var(--surface2);color:var(--t1);outline:none}
-.tgt-inp:focus{border-color:var(--t1)}
+/* ── Main ── */
+.main-area{min-height:100vh}
+.tab-panel{display:none;padding:32px 36px;max-width:920px}
+.tab-panel.active{display:block}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.page-title{font-size:24px;font-weight:600;letter-spacing:-.02em;margin-bottom:22px}
 .pill{font-size:11px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:99px;white-space:nowrap;font-weight:500}
-.pg{background:var(--green-bg);color:var(--green)}
-.pa{background:var(--amber-bg);color:var(--amber)}
-.pn{background:var(--surface2);color:var(--t2)}
-.icon-btn{width:27px;height:27px;border:none;background:none;cursor:pointer;border-radius:var(--rsm);color:var(--t3);font-size:15px;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;flex-shrink:0;font-family:'DM Sans',sans-serif}
-.icon-btn:hover{background:var(--red-bg);color:var(--red)}
+.pg{background:var(--green-bg);color:var(--green)}.pa{background:var(--amber-bg);color:var(--amber)}.pn{background:var(--surface2);color:var(--t2)}.pb{background:var(--blue-bg);color:var(--blue)}
 
-/* Member rows */
-.dc-body{padding:10px 18px 14px}
-.mrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border)}
+/* ── Leave tab ── */
+.leave-layout{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+.cal-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:.5px solid var(--border)}
+.cal-month{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.cal-nav-btn{width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius:var(--rsm);font-size:16px;color:var(--t2);transition:background .15s;display:flex;align-items:center;justify-content:center}
+.cal-nav-btn:hover{background:var(--surface2)}
+.cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:.5px solid var(--border)}
+.cal-dow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);text-align:center;padding:8px 0}
+.cal-dow:first-child{color:#B03A2E}.cal-dow:last-child{color:#1F618D}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:76px;border-right:.5px solid var(--border);border-bottom:.5px solid var(--border);padding:5px 4px;cursor:pointer;transition:background .1s}
+.cal-day:nth-child(7n){border-right:none}
+.cal-day:hover{background:rgba(0,0,0,.025)}
+.cal-day.other-month .cal-dn{color:var(--t3)}
+.cal-day.today .cal-dn-wrap{background:var(--t1);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.cal-dn-wrap{width:20px;height:20px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.cal-dn{font-size:11px;font-weight:500;line-height:1}
+.cal-day:nth-child(7n+1) .cal-dn{color:#B03A2E}
+.cal-day:nth-child(7n) .cal-dn{color:#1F618D}
+.cal-day.today .cal-dn{color:#fff}
+.leave-chip{font-size:9.5px;padding:1px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:2px;line-height:1.5;max-width:100%}
+.chip-annual{background:var(--la-bg);color:var(--la)}
+.chip-half{background:var(--lh-bg);color:var(--lh)}
+.chip-time{background:var(--lt-bg);color:var(--lt)}
+.more-chip{font-size:9px;color:var(--t3);padding:0 2px}
+
+/* Right panel */
+.leave-panel{display:flex;flex-direction:column;gap:10px}
+.leave-form-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:16px 16px 14px}
+.lf-title{font-size:13px;font-weight:600;margin-bottom:12px;letter-spacing:-.01em}
+.lf-row{margin-bottom:10px}
+.lf-label{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px;display:block}
+.lf-select,.lf-input{width:100%;font-size:13px;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:7px 9px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;transition:border-color .15s}
+.lf-select:focus,.lf-input:focus{border-color:var(--t1)}
+.leave-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.lt-btn{padding:7px 4px;border-radius:var(--rsm);border:.5px solid var(--border-md);background:none;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all .15s;color:var(--t2);display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.3}
+.lt-btn .lt-icon{font-size:15px}
+.lt-btn.sel-annual{background:var(--la-bg);color:var(--la);border-color:var(--la)}
+.lt-btn.sel-half{background:var(--lh-bg);color:var(--lh);border-color:var(--lh)}
+.lt-btn.sel-time{background:var(--lt-bg);color:var(--lt);border-color:var(--lt)}
+.date-range-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.date-sub-label{font-size:10px;color:var(--t3);margin-bottom:3px;font-family:'DM Mono',monospace}
+.btn-add-leave{width:100%;padding:9px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s;margin-top:2px}
+.btn-add-leave:hover{opacity:.82}
+.lf-err{font-size:11px;color:var(--red);margin-top:5px;min-height:15px}
+
+.legend-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.legend-title{font-size:11px;font-weight:600;margin-bottom:8px;color:var(--t2);font-family:'DM Mono',monospace;letter-spacing:.04em;text-transform:uppercase}
+.legend-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:12px;color:var(--t2)}
+.legend-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+
+.leave-list-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:12px}
+.llc-header{padding:11px 14px;border-bottom:.5px solid var(--border);font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.ll-empty{padding:16px;text-align:center;font-size:12px;color:var(--t3)}
+.ll-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-bottom:.5px solid var(--border);font-size:12px}
+.ll-item:last-child{border-bottom:none}
+.ll-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0}
+.ll-info{flex:1;min-width:0}
+.ll-name{font-weight:500;font-size:12px}
+.ll-date{font-size:10px;color:var(--t3);font-family:'DM Mono',monospace}
+.ll-del{width:20px;height:20px;border:none;background:none;cursor:pointer;border-radius:4px;color:var(--t3);font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ll-del:hover{background:var(--red-bg);color:var(--red)}
+
+/* ── Roster tab (admin) ── */
+.sum-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.sc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:13px 15px}
+.sc-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.sc-val{font-size:22px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.sc-val.g{color:var(--green)}.sc-val.a{color:var(--amber)}
+.project-inp{font-size:24px;font-weight:600;letter-spacing:-.02em;border:none;background:transparent;color:var(--t1);font-family:'DM Sans',sans-serif;width:100%;outline:none;border-bottom:2px solid transparent;padding:2px 0;margin-bottom:22px;transition:border-color .15s}
+.project-inp:focus{border-bottom-color:var(--t1)}
+.dc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);margin-bottom:11px;overflow:hidden}
+.dc-head{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:.5px solid var(--border)}
+.dc-idx{width:28px;height:28px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;flex-shrink:0}
+.dc-name-inp{font-size:14px;font-weight:600;border:none;background:transparent;color:var(--t1);font-family:'DM Sans',sans-serif;flex:1;outline:none;letter-spacing:-.01em;min-width:0}
+.dc-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.target-grp{display:flex;align-items:center;gap:4px}
+.tgt-lbl{font-size:11px;color:var(--t3)}
+.tgt-inp{width:44px;text-align:center;font-size:12px;font-weight:500;font-family:'DM Mono',monospace;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:3px 4px;background:var(--surface2);color:var(--t1);outline:none}
+.tgt-inp:focus{border-color:var(--t1)}
+.icon-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius:var(--rsm);color:var(--t3);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.icon-btn:hover{background:var(--red-bg);color:var(--red)}
+.dc-body{padding:7px 15px 12px}
+.mrow{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:.5px solid var(--border)}
 .mrow:last-of-type{border-bottom:none}
-.av{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
-.m-name-inp{flex:1;min-width:70px;font-size:13px;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--t1);outline:none;padding:2px 0}
+.av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0}
+.m-name-inp{flex:1;min-width:70px;font-size:12px;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--t1);outline:none;padding:2px 0}
 .m-name-inp::placeholder{color:var(--t3)}
-.m-role-inp{flex:2;font-size:12px;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--t2);outline:none;padding:2px 0}
+.m-role-inp{flex:2;font-size:11px;border:none;background:transparent;font-family:'DM Sans',sans-serif;color:var(--t2);outline:none;padding:2px 0}
 .m-role-inp::placeholder{color:var(--t3)}
-.divv{width:.5px;height:13px;background:var(--border-md);flex-shrink:0}
-.add-member-btn{width:100%;margin-top:9px;padding:7px;border-radius:var(--rsm);border:0.5px dashed var(--border-md);background:none;color:var(--t3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.divv{width:.5px;height:11px;background:var(--border-md);flex-shrink:0}
+.add-member-btn{width:100%;margin-top:7px;padding:6px;border-radius:var(--rsm);border:.5px dashed var(--border-md);background:none;color:var(--t3);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
 .add-member-btn:hover{background:var(--surface2);color:var(--t1)}
 
-/* ════════════════════════════
-   REPORT
-════════════════════════════ */
-#view-report{background:var(--bg);padding:56px 24px 80px;min-height:100vh}
+/* ── Login (admin) ── */
+.login-card{background:var(--surface);border:.5px solid var(--border-md);border-radius:14px;padding:36px 32px 28px;width:100%;max-width:340px;box-shadow:0 8px 40px rgba(0,0,0,.07)}
+.login-logo{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.login-title{font-size:20px;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--t3);margin-bottom:22px}
+.login-label{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:5px;display:block}
+.login-inp{width:100%;font-size:13px;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:9px 12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;margin-bottom:12px;transition:border-color .15s}
+.login-inp:focus{border-color:var(--t1)}
+.login-btn{width:100%;padding:11px;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s}
+.login-btn:hover{opacity:.82}
+.login-err{font-size:11px;color:var(--red);margin-top:8px;text-align:center;min-height:16px}
+.login-back{width:100%;padding:8px;border-radius:var(--rsm);background:none;color:var(--t3);font-size:12px;cursor:pointer;border:.5px solid var(--border);font-family:'DM Sans',sans-serif;margin-top:6px;transition:all .15s}
+.login-back:hover{background:var(--surface2);color:var(--t2)}
+
+/* ── Report view ── */
+#view-report{background:var(--bg);padding:48px 24px 80px;min-height:100vh}
 .rpage{max-width:880px;margin:0 auto}
-.rp-header{margin-bottom:44px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
-.rp-title{font-size:38px;font-weight:600;letter-spacing:-.025em;line-height:1.05}
-.rp-date{font-size:13px;color:var(--t3);margin-top:8px}
-.rp-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.btn-back{font-size:12px;font-family:'DM Mono',monospace;padding:7px 13px;border-radius:var(--rsm);border:.5px solid var(--border-md);background:var(--surface);color:var(--t2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.rp-header{margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px}
+.rp-title{font-size:34px;font-weight:600;letter-spacing:-.025em;line-height:1.05}
+.rp-date{font-size:12px;color:var(--t3);margin-top:6px}
+.rp-actions{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.btn-back{font-size:12px;padding:6px 12px;border-radius:var(--rsm);border:.5px solid var(--border-md);background:var(--surface);color:var(--t2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
 .btn-back:hover{background:var(--surface2)}
-.btn-print{font-size:13px;padding:8px 16px;border-radius:var(--rsm);border:none;background:var(--t1);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s}
-.btn-print:hover{opacity:.82}
-.rsum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px}
-.rsc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:20px 22px}
-.rsc-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
-.rsc-val{font-size:32px;font-weight:600;letter-spacing:-.03em;line-height:1}
-.rsc-val.g{color:var(--green)}
-.rsc-val.a{color:var(--amber)}
-.rsc-sub{font-size:12px;color:var(--t3);margin-top:5px}
-.prog-wrap{margin-bottom:40px}
-.prog-track{height:5px;background:var(--surface2);border-radius:99px;overflow:hidden}
-.prog-fill{height:100%;background:var(--t1);border-radius:99px;transition:width 1s cubic-bezier(.16,1,.3,1)}
-.prog-meta{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--t3)}
-.sec-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
-.ov-table{width:100%;border-collapse:collapse;margin-bottom:40px;background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
-.ov-table th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:11px 15px;text-align:left;border-bottom:.5px solid var(--border);font-weight:400}
-.ov-table td{padding:11px 15px;border-bottom:.5px solid var(--border);font-size:13px;vertical-align:middle}
+.btn-print{font-size:12px;padding:7px 14px;border-radius:var(--rsm);border:none;background:var(--t1);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif}
+.rsum{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:28px}
+.rsc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.rsc-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.rsc-val{font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.rsc-val.g{color:var(--green)}.rsc-val.a{color:var(--amber)}
+.rsc-sub{font-size:11px;color:var(--t3);margin-top:4px}
+.prog-wrap{margin-bottom:32px}
+.prog-track{height:4px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:var(--t1);border-radius:99px}
+.prog-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--t3)}
+.sec-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:11px}
+.ov-table{width:100%;border-collapse:collapse;margin-bottom:32px;background:var(--surface);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.ov-table th{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);padding:10px 13px;text-align:left;border-bottom:.5px solid var(--border);font-weight:400}
+.ov-table td{padding:10px 13px;border-bottom:.5px solid var(--border);font-size:12px;vertical-align:middle}
 .ov-table tr:last-child td{border-bottom:none}
 .ov-table tbody tr:hover td{background:var(--surface2)}
-.mini-wrap{display:flex;align-items:center;gap:8px}
-.mini-track{flex:1;height:4px;background:var(--surface2);border-radius:99px;overflow:hidden;min-width:60px}
+.mini-wrap{display:flex;align-items:center;gap:6px}
+.mini-track{flex:1;height:3px;background:var(--surface2);border-radius:99px;overflow:hidden;min-width:50px}
 .mini-fill{height:100%;background:var(--t1);border-radius:99px}
-.mini-pct{font-size:11px;font-family:'DM Mono',monospace;color:var(--t3);min-width:32px;text-align:right}
-.dept-sec{margin-bottom:34px}
-.dept-sec-head{display:flex;align-items:center;gap:11px;margin-bottom:13px;padding-bottom:13px;border-bottom:.5px solid var(--border)}
-.dsec-idx{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);min-width:22px}
-.dsec-name{font-size:17px;font-weight:600;letter-spacing:-.01em;flex:1}
-.dsec-pills{display:flex;gap:6px;flex-wrap:wrap}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:8px}
-.mcard{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rsm);padding:11px 13px;display:flex;align-items:center;gap:10px}
-.mcard.slot{border-style:dashed;background:transparent;opacity:.38}
-.mav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.mini-pct{font-size:10px;font-family:'DM Mono',monospace;color:var(--t3);min-width:28px;text-align:right}
+.dept-sec{margin-bottom:28px}
+.dept-sec-head{display:flex;align-items:center;gap:9px;margin-bottom:11px;padding-bottom:11px;border-bottom:.5px solid var(--border)}
+.dsec-idx{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);min-width:18px}
+.dsec-name{font-size:15px;font-weight:600;letter-spacing:-.01em;flex:1}
+.dsec-pills{display:flex;gap:5px;flex-wrap:wrap}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.mcard{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rsm);padding:9px 11px;display:flex;align-items:center;gap:8px}
+.mcard.slot{border-style:dashed;background:transparent;opacity:.35}
+.mav-r{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
 .minfo{min-width:0}
-.mname{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mname{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mrole{font-size:11px;color:var(--t3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rfooter{margin-top:56px;padding-top:22px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.rfooter-note{font-size:12px;color:var(--t3)}
-.rfooter-badge{font-family:'DM Mono',monospace;font-size:10px;background:var(--surface2);color:var(--t3);padding:4px 10px;border-radius:99px;letter-spacing:.06em}
+.rfooter{margin-top:44px;padding-top:18px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.rfooter-note{font-size:11px;color:var(--t3)}
+.rfooter-badge{font-family:'DM Mono',monospace;font-size:9px;background:var(--surface2);color:var(--t3);padding:3px 9px;border-radius:99px}
 
-/* ─ Modal ─ */
+/* ── Modals ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border-radius:var(--r);padding:26px 26px 22px;width:90%;max-width:480px;box-shadow:0 24px 64px rgba(0,0,0,.14)}
-.modal-title{font-size:16px;font-weight:600;margin-bottom:16px;letter-spacing:-.01em}
-.modal-lbl{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
-.modal-inp{width:100%;font-size:14px;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:9px 12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;margin-bottom:14px}
+.modal{background:var(--surface);border-radius:var(--r);padding:22px 22px 18px;width:90%;max-width:460px;box-shadow:0 24px 64px rgba(0,0,0,.14)}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:13px;letter-spacing:-.01em}
+.modal-lbl{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.modal-inp{width:100%;font-size:13px;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:8px 11px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--t1);outline:none;margin-bottom:12px}
 .modal-inp:focus{border-color:var(--t1)}
-.modal-row{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
-.btn-cancel{padding:8px 16px;border:.5px solid var(--border-md);border-radius:var(--rsm);background:none;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--t2)}
-.btn-ok{padding:8px 16px;border:none;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
-.url-box{width:100%;font-size:12px;font-family:'DM Mono',monospace;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:10px 12px;background:var(--surface2);color:var(--t2);word-break:break-all;margin-bottom:12px;line-height:1.7;max-height:90px;overflow-y:auto;white-space:pre-wrap}
-.copy-note{font-size:11px;color:var(--t3);text-align:center;margin-top:9px}
+.modal-row{display:flex;gap:7px;justify-content:flex-end;margin-top:6px}
+.btn-cancel{padding:7px 13px;border:.5px solid var(--border-md);border-radius:var(--rsm);background:none;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--t2)}
+.btn-ok{padding:7px 13px;border:none;border-radius:var(--rsm);background:var(--t1);color:#fff;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.url-box{width:100%;font-size:11px;font-family:'DM Mono',monospace;border:.5px solid var(--border-md);border-radius:var(--rsm);padding:9px 11px;background:var(--surface2);color:var(--t2);word-break:break-all;margin-bottom:10px;line-height:1.7;max-height:80px;overflow-y:auto;white-space:pre-wrap}
+.copy-note{font-size:10px;color:var(--t3);text-align:center;margin-top:7px}
+.day-detail-list{max-height:280px;overflow-y:auto;margin-top:10px}
+.dd-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:.5px solid var(--border)}
+.dd-item:last-child{border-bottom:none}
+.dd-chip{font-size:11px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap}
+.dd-name{font-size:13px;font-weight:500;flex:1}
+.dd-del{width:20px;height:20px;border:none;background:none;cursor:pointer;border-radius:4px;color:var(--t3);font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.dd-del:hover{background:var(--red-bg);color:var(--red)}
+.dd-empty{font-size:12px;color:var(--t3);padding:12px 0;text-align:center}
 
-/* Print */
+/* admin badge */
+.admin-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:'DM Mono',monospace;background:var(--amber-bg);color:var(--amber);padding:3px 9px;border-radius:99px;margin-left:8px;letter-spacing:.04em}
+
 @media print{
-  #view-editor,#view-editor *,.rp-actions,.no-print{display:none!important}
-  #view-report{padding:0}
-  body{background:#fff}
+  #view-leave,#view-login,#view-admin,.rp-actions,.no-print{display:none!important}
+  #view-report{padding:0}body{background:#fff}
 }
-@media(max-width:640px){
-  .editor-shell{grid-template-columns:1fr}
-  .sb{position:static;height:auto}
-  .ed-main{padding:22px 16px}
-  .sum-strip,.rsum{grid-template-columns:1fr 1fr}
-  .rp-title{font-size:26px}
-  .mgrid{grid-template-columns:1fr 1fr}
-  .ov-table{display:none}
+@media(max-width:680px){
+  .app-shell{grid-template-columns:1fr}.sb{position:static;height:auto}
+  .tab-panel{padding:18px 14px}
+  .leave-layout{grid-template-columns:1fr}
+  .rp-title{font-size:24px}.mgrid{grid-template-columns:1fr 1fr}
+  .ov-table{display:none}.rsum{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN VIEW ══ -->
+<!-- ══ MAIN APP (휴가 관리 — 로그인 불필요) ══ -->
+<div class="view active" id="view-leave">
+  <div class="app-shell">
+    <aside class="sb">
+      <div class="sb-top">
+        <div class="sb-eyebrow">XP 인원관리</div>
+        <div class="sb-title" id="sb-title-main">XP HERO</div>
+      </div>
+      <div class="sb-section">메뉴</div>
+      <button class="nav-btn active" id="nav-calendar" onclick="switchLeaveTab('calendar')">
+        <span class="nav-icon">📅</span><span class="nav-lbl">휴가 달력</span><span class="nav-cnt" id="nav-cnt-cal">—</span>
+      </button>
+      <button class="nav-btn" id="nav-members" onclick="switchLeaveTab('members')">
+        <span class="nav-icon">👥</span><span class="nav-lbl">팀원 현황</span>
+      </button>
+      <div class="sb-footer">
+        <button class="btn-primary" onclick="openShareModal()">🔗 현황 공유</button>
+        <button class="btn-admin" onclick="goAdminLogin()">⚙ 관리자</button>
+      </div>
+    </aside>
+    <div class="main-area">
+      <!-- 휴가 달력 패널 -->
+      <div class="tab-panel active" id="tab-calendar">
+        <div class="eyebrow">XP 인원관리</div>
+        <div class="page-title">휴가 달력</div>
+        <div class="leave-layout">
+          <div>
+            <div class="cal-card">
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="moveMonth(-1)">‹</button>
+                <div class="cal-month" id="cal-month-label"></div>
+                <button class="cal-nav-btn" onclick="moveMonth(1)">›</button>
+              </div>
+              <div class="cal-dow-row">
+                <div class="cal-dow">일</div><div class="cal-dow">월</div><div class="cal-dow">화</div>
+                <div class="cal-dow">수</div><div class="cal-dow">목</div><div class="cal-dow">금</div><div class="cal-dow">토</div>
+              </div>
+              <div class="cal-days" id="cal-days"></div>
+            </div>
+            <div class="leave-list-card">
+              <div class="llc-header">
+                <span id="ll-month-label">이번 달 휴가</span>
+                <span class="pill pn" id="ll-count">0건</span>
+              </div>
+              <div id="ll-body"><div class="ll-empty">등록된 휴가가 없습니다</div></div>
+            </div>
+          </div>
+          <div class="leave-panel">
+            <div class="leave-form-card">
+              <div class="lf-title">휴가 등록</div>
+              <div class="lf-row">
+                <label class="lf-label">팀원 선택</label>
+                <select class="lf-select" id="lf-member"></select>
+              </div>
+              <div class="lf-row">
+                <label class="lf-label">휴가 유형</label>
+                <div class="leave-type-grid">
+                  <button class="lt-btn sel-annual" id="lt-annual" onclick="selectLeaveType('annual')"><span class="lt-icon">🌴</span><span>연차</span></button>
+                  <button class="lt-btn" id="lt-half" onclick="selectLeaveType('half')"><span class="lt-icon">🌤</span><span>반차</span></button>
+                  <button class="lt-btn" id="lt-time" onclick="selectLeaveType('time')"><span class="lt-icon">⏰</span><span>시간조정</span></button>
+                </div>
+              </div>
+              <div class="lf-row">
+                <label class="lf-label">날짜</label>
+                <div class="date-range-row">
+                  <div><div class="date-sub-label">시작</div><input class="lf-input" type="date" id="lf-date-start"></div>
+                  <div><div class="date-sub-label">종료</div><input class="lf-input" type="date" id="lf-date-end"></div>
+                </div>
+              </div>
+              <div class="lf-row">
+                <label class="lf-label">메모 <span style="opacity:.5;font-weight:400">(선택)</span></label>
+                <input class="lf-input" type="text" id="lf-note" placeholder="예: 오전 반차, 14:00-17:00">
+              </div>
+              <div class="lf-err" id="lf-err"></div>
+              <button class="btn-add-leave" onclick="addLeave()">등록하기</button>
+            </div>
+            <div class="legend-card">
+              <div class="legend-title">유형 안내</div>
+              <div class="legend-row"><div class="legend-dot" style="background:var(--la-bg);border:1px solid var(--la)"></div>🌴 연차 — 하루 이상</div>
+              <div class="legend-row"><div class="legend-dot" style="background:var(--lh-bg);border:1px solid var(--lh)"></div>🌤 반차 — 오전/오후</div>
+              <div class="legend-row"><div class="legend-dot" style="background:var(--lt-bg);border:1px solid var(--lt)"></div>⏰ 시간조정 — 시간 단위</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 팀원 현황 패널 -->
+      <div class="tab-panel" id="tab-members">
+        <div class="eyebrow">XP 인원관리</div>
+        <div class="page-title">팀원 현황</div>
+        <div id="members-view"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN LOGIN ══ -->
 <div class="view" id="view-login">
   <div class="login-card">
-    <div class="login-logo">Team Roster</div>
-    <div class="login-title">XP HERO</div>
-
-    <!-- 보고서 열람 섹션 -->
-    <div class="login-section-label">보고서 열람</div>
-    <button class="login-report-btn" id="btn-view-report" onclick="openLastReport()">최근 보고서 보기</button>
-    <div class="login-divider"><span>또는 편집자 로그인</span></div>
-
-    <!-- 로그인 섹션 -->
+    <div class="login-logo">XP 인원관리</div>
+    <div class="login-title">관리자 로그인</div>
+    <div class="login-sub">인원 구성 편집은 관리자만 가능합니다</div>
     <label class="login-label">아이디</label>
     <input class="login-inp" id="login-id" type="text" placeholder="ID" autocomplete="username">
     <label class="login-label">비밀번호</label>
     <input class="login-inp" id="login-pw" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="login-btn" onclick="doLogin()">편집 화면 로그인</button>
+    <button class="login-btn" onclick="doLogin()">로그인</button>
     <div class="login-err" id="login-err"></div>
+    <button class="login-back" onclick="showView('leave')">← 돌아가기</button>
   </div>
 </div>
 
-<!-- ══ EDITOR VIEW ══ -->
-<div class="view" id="view-editor">
-  <div class="editor-shell">
+<!-- ══ ADMIN (인원 구성 편집) ══ -->
+<div class="view" id="view-admin">
+  <div class="app-shell">
     <aside class="sb">
-      <div class="sb-logo"><small>Team Roster</small><span id="sb-project-name">XP HERO</span></div>
-      <div id="sb-nav"></div>
+      <div class="sb-top">
+        <div class="sb-eyebrow">XP 인원관리</div>
+        <div class="sb-title">관리자 모드 <span class="admin-badge">ADMIN</span></div>
+      </div>
+      <div class="sb-section">인원 구성</div>
+      <div id="admin-nav"></div>
       <div class="sb-footer">
         <button class="btn-ghost" onclick="openAddDept()">+ 팀 추가</button>
-        <button class="btn-primary" onclick="goReport()">보고서 보기 →</button>
+        <button class="btn-primary" onclick="saveAndReturn()">저장 후 나가기</button>
+        <button class="btn-ghost" style="color:var(--red);border-color:rgba(139,26,26,.2)" onclick="adminLogout()">로그아웃</button>
       </div>
     </aside>
-    <main class="ed-main">
-      <div class="eyebrow">Team Roster Editor</div>
-      <input class="project-inp" id="project-inp" value="XP HERO" placeholder="프로젝트 명" oninput="onProjectName()">
-      <div class="sum-strip">
-        <div class="sc"><div class="sc-lbl">목표 인원</div><div class="sc-val" id="e-target">—</div></div>
-        <div class="sc"><div class="sc-lbl">현재 인원</div><div class="sc-val g" id="e-current">—</div></div>
-        <div class="sc"><div class="sc-lbl">추가 필요</div><div class="sc-val a" id="e-add">—</div></div>
+    <div class="main-area">
+      <div class="tab-panel active" id="tab-admin-roster">
+        <div class="eyebrow">관리자 · 인원 구성</div>
+        <input class="project-inp" id="project-inp" value="XP HERO" placeholder="프로젝트 명" oninput="onProjectName()">
+        <div class="sum-strip">
+          <div class="sc"><div class="sc-lbl">목표 인원</div><div class="sc-val" id="e-target">—</div></div>
+          <div class="sc"><div class="sc-lbl">현재 인원</div><div class="sc-val g" id="e-current">—</div></div>
+          <div class="sc"><div class="sc-lbl">추가 필요</div><div class="sc-val a" id="e-add">—</div></div>
+        </div>
+        <div id="dept-list"></div>
       </div>
-      <div id="dept-list"></div>
-    </main>
+    </div>
   </div>
 </div>
 
-<!-- ══ REPORT VIEW ══ -->
+<!-- ══ REPORT ══ -->
 <div class="view" id="view-report">
   <div class="rpage" id="rpage"></div>
 </div>
@@ -245,10 +404,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 <div class="overlay" id="modal-dept">
   <div class="modal">
     <div class="modal-title">새 팀 추가</div>
-    <div class="modal-lbl">팀 이름</div>
-    <input class="modal-inp" id="m-dept-name" placeholder="예: QA, 사운드">
-    <div class="modal-lbl">목표 인원</div>
-    <input class="modal-inp" id="m-dept-target" type="number" min="1" value="5">
+    <div class="modal-lbl">팀 이름</div><input class="modal-inp" id="m-dept-name" placeholder="예: QA, 사운드">
+    <div class="modal-lbl">목표 인원</div><input class="modal-inp" id="m-dept-target" type="number" min="1" value="5">
     <div class="modal-row">
       <button class="btn-cancel" onclick="closeModal('modal-dept')">취소</button>
       <button class="btn-ok" onclick="confirmAddDept()">추가</button>
@@ -259,461 +416,515 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 <!-- Share modal -->
 <div class="overlay" id="modal-share">
   <div class="modal">
-    <div class="modal-title">공유 링크</div>
-    <p style="font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6">아래 링크를 복사해서 공유하세요.<br>링크 안에 모든 데이터가 포함되어 있어 서버 없이 열립니다.</p>
+    <div class="modal-title">현황 공유</div>
+    <p style="font-size:12px;color:var(--t2);margin-bottom:11px;line-height:1.6">아래 링크를 복사해서 공유하세요.<br>인원 구성 + 휴가 데이터가 모두 포함됩니다.</p>
     <div class="url-box" id="share-url-box"></div>
     <button class="btn-ok" style="width:100%;padding:10px" id="btn-copy" onclick="copyUrl()">링크 복사</button>
     <div class="copy-note" id="copy-note">클릭하면 클립보드에 복사됩니다</div>
   </div>
 </div>
 
+<!-- Day detail modal -->
+<div class="overlay" id="modal-day">
+  <div class="modal">
+    <div class="modal-title" id="modal-day-title">날짜 상세</div>
+    <div class="day-detail-list" id="modal-day-list"></div>
+    <div class="modal-row" style="margin-top:12px">
+      <button class="btn-ok" onclick="closeModal('modal-day')">닫기</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ─ Palette ─ */
+/* ═══════════════════════
+   CONSTANTS
+═══════════════════════ */
 const PAL=[
-  {bg:'#D8F3DC',fg:'#2D6A4F'},
-  {bg:'#DBEAFE',fg:'#1A4F8A'},
-  {bg:'#EDE9FE',fg:'#4C1D95'},
-  {bg:'#FEF3C7',fg:'#7A5000'},
-  {bg:'#FFE4E6',fg:'#9F1239'},
-  {bg:'#CCFBF1',fg:'#0D5A47'},
+  {bg:'#D8F3DC',fg:'#2D6A4F'},{bg:'#DBEAFE',fg:'#1A4F8A'},
+  {bg:'#EDE9FE',fg:'#4C1D95'},{bg:'#FEF3C7',fg:'#7A5000'},
+  {bg:'#FFE4E6',fg:'#9F1239'},{bg:'#CCFBF1',fg:'#0D5A47'},
   {bg:'#FEE2E2',fg:'#8B1A1A'},
 ];
+const LT={
+  annual:{label:'연차',icon:'🌴',chip:'chip-annual'},
+  half:  {label:'반차',icon:'🌤',chip:'chip-half'},
+  time:  {label:'시간조정',icon:'⏰',chip:'chip-time'},
+};
 const pal=i=>PAL[i%PAL.length];
 const ini=s=>(s||'').trim().slice(0,2).toUpperCase()||'??';
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const uid=()=>Math.random().toString(36).slice(2,8);
+const today=new Date();
+const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-/* ─ State ─ */
+/* ═══════════════════════
+   STATE
+═══════════════════════ */
 let S={
   name:'XP HERO',
   depts:[
     {id:'pd',  name:'PD',       target:1,  members:[{name:'(PD)',role:'프로젝트 총괄'}]},
     {id:'plan',name:'기획',      target:7,  members:[
-      {name:'라이언',role:'수익화 및 지표'},
-      {name:'웨이드',role:'컨텐츠 및 버전 관리'},
-      {name:'디뉴',  role:'컨텐츠'},
-      {name:'데빈',  role:'전투 및 밸런스'},
-      {name:'틴틴',  role:'라이브옵스 이벤트 및 수익화'},
+      {name:'라이언',role:'수익화 및 지표'},{name:'웨이드',role:'컨텐츠 및 버전 관리'},
+      {name:'디뉴',role:'컨텐츠'},{name:'데빈',role:'전투 및 밸런스'},{name:'틴틴',role:'라이브옵스 이벤트 및 수익화'},
     ]},
     {id:'dev', name:'개발',      target:10, members:[
-      {name:'라스',  role:'개발팀 리드'},
-      {name:'타이드',role:''},{name:'민즈',role:''},{name:'플라워',role:''},{name:'저니',role:''},{name:'라니',role:''},
+      {name:'라스',role:'개발팀 리드'},{name:'타이드',role:''},{name:'민즈',role:''},
+      {name:'플라워',role:''},{name:'저니',role:''},{name:'라니',role:''},
     ]},
     {id:'art', name:'아트 (3D)', target:7,  members:[
-      {name:'리즈',  role:'아트팀 리드'},
-      {name:'월터',role:''},{name:'마루',role:''},{name:'제이수',role:''},{name:'써니',role:''},{name:'샐리',role:''},
+      {name:'리즈',role:'아트팀 리드'},{name:'월터',role:''},{name:'마루',role:''},
+      {name:'제이수',role:''},{name:'써니',role:''},{name:'샐리',role:''},
     ]},
     {id:'ui',  name:'UI (2D)',   target:5,  members:[
-      {name:'아스카',role:'UI 리드'},
-      {name:'에리카',role:''},
+      {name:'아스카',role:'UI 리드'},{name:'에리카',role:''},
     ]},
-  ]
+  ],
+  leaves:[]
 };
 
-/* ─ Encode / Decode ─ */
-function encode(obj){
-  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-}
-function decode(str){
-  try{ return JSON.parse(decodeURIComponent(escape(atob(str)))); }
-  catch{ return null; }
-}
-
-/* ─ Auth ─ */
+/* ═══════════════════════
+   AUTH
+═══════════════════════ */
 const AUTH={id:'master',pw:'12345!'};
-const SESSION_KEY='xphero_auth';
-function isLoggedIn(){ return sessionStorage.getItem(SESSION_KEY)==='ok'; }
+const SESS='xphero_admin';
+function isAdmin(){return sessionStorage.getItem(SESS)==='ok';}
 
+function goAdminLogin(){showView('login');setTimeout(()=>document.getElementById('login-id').focus(),100);}
 function doLogin(){
   const id=document.getElementById('login-id').value.trim();
   const pw=document.getElementById('login-pw').value;
   const err=document.getElementById('login-err');
-  if(id===AUTH.id && pw===AUTH.pw){
-    sessionStorage.setItem(SESSION_KEY,'ok');
-    err.textContent='';
-    location.hash='editor';
-    showView('editor');
-    renderEditor();
-    addLogoutBtn();
+  if(id===AUTH.id&&pw===AUTH.pw){
+    sessionStorage.setItem(SESS,'ok');err.textContent='';
+    showView('admin');renderAdmin();
   } else {
     err.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';
     document.getElementById('login-pw').value='';
     document.getElementById('login-pw').focus();
   }
 }
+function adminLogout(){sessionStorage.removeItem(SESS);showView('leave');}
+function saveAndReturn(){syncAll();showView('leave');renderLeaveTab();}
 
-function addLogoutBtn(){
-  if(document.getElementById('logout-btn')) return;
-  const footer=document.querySelector('.sb-footer');
-  if(!footer) return;
-  const btn=document.createElement('button');
-  btn.id='logout-btn';
-  btn.className='btn-ghost';
-  btn.style.cssText='color:var(--red);border-color:rgba(139,26,26,.2);font-size:12px';
-  btn.textContent='로그아웃';
-  btn.onclick=()=>{ sessionStorage.removeItem(SESSION_KEY); location.hash=''; showView('login'); };
-  footer.appendChild(btn);
-}
-
-/* ─ URL hash routing ─ */
-function getHash(){
-  const h=location.hash.slice(1);
-  if(h.startsWith('report=')) return {view:'report', data:decode(h.slice(7))};
-  if(h==='editor') return {view:'editor'};
-  return {view:'editor'};
-}
-
-function goReport(){
-  syncAll();
-  location.hash='report='+encode(S);
-}
-
-function goEditor(){
-  if(!isLoggedIn()){ showView('login'); return; }
-  location.hash='editor';
-}
+/* ═══════════════════════
+   ENCODE / DECODE / ROUTING
+═══════════════════════ */
+function encode(obj){return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));}
+function decode(str){try{return JSON.parse(decodeURIComponent(escape(atob(str))));}catch{return null;}}
 
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
 }
 
-window.addEventListener('hashchange',route);
 function route(){
-  const {view,data}=getHash();
-  if(view==='report'){
-    if(!data){ isLoggedIn()?showView('editor'):showView('login'); return; }
-    renderReport(data);
-    showView('report');
+  const h=location.hash.slice(1);
+  if(h.startsWith('report=')){
+    const data=decode(h.slice(7));
+    if(data){renderReport(data);showView('report');}
+    else showView('leave');
   } else {
-    // editor requires login
-    if(!isLoggedIn()){ showView('login'); return; }
-    showView('editor');
-    renderEditor();
-    addLogoutBtn();
+    showView('leave');
+    renderLeaveTab();
+  }
+}
+window.addEventListener('hashchange',route);
+
+/* ═══════════════════════
+   LEAVE TAB
+═══════════════════════ */
+let calYear=today.getFullYear();
+let calMonth=today.getMonth();
+let selType='annual';
+let selLeaveTab='calendar';
+
+function switchLeaveTab(tab){
+  selLeaveTab=tab;
+  document.querySelectorAll('#view-leave .tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#view-leave .nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+  if(tab==='members')renderMembersView();
+}
+
+function renderLeaveTab(){
+  document.getElementById('sb-title-main').textContent=S.name||'XP HERO';
+  updateMemberSelect();
+  renderCalendar();
+  renderLeaveList();
+  updateCalNavCount();
+}
+
+function updateCalNavCount(){
+  const ym=`${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+  const cnt=S.leaves.filter(l=>l.dateStart.slice(0,7)===ym||l.dateEnd.slice(0,7)===ym).length;
+  document.getElementById('nav-cnt-cal').textContent=cnt+'건';
+}
+
+function allMembers(){
+  const arr=[];
+  S.depts.forEach(d=>d.members.forEach(m=>{if(m.name&&m.name.trim())arr.push(m.name);}));
+  return arr;
+}
+
+function memberPalIdx(name){
+  let idx=0;
+  S.depts.forEach((d,di)=>{d.members.forEach(m=>{if(m.name===name)idx=di;});});
+  return idx;
+}
+
+function updateMemberSelect(){
+  const sel=document.getElementById('lf-member');
+  if(!sel)return;
+  const prev=sel.value;
+  sel.innerHTML='<option value="">— 팀원을 선택하세요 —</option>';
+  S.depts.forEach(d=>{
+    if(d.members.length===0)return;
+    const og=document.createElement('optgroup');og.label=d.name;
+    d.members.forEach(m=>{
+      if(!m.name.trim())return;
+      const opt=document.createElement('option');opt.value=m.name;opt.textContent=m.name;
+      og.appendChild(opt);
+    });
+    if(og.children.length>0)sel.appendChild(og);
+  });
+  if(prev)sel.value=prev;
+}
+
+function selectLeaveType(type){
+  selType=type;
+  ['annual','half','time'].forEach(t=>{
+    document.getElementById('lt-'+t).className='lt-btn'+(t===type?' sel-'+t:'');
+  });
+}
+
+function addLeave(){
+  const memberName=document.getElementById('lf-member').value;
+  const dateStart=document.getElementById('lf-date-start').value;
+  const dateEnd=document.getElementById('lf-date-end').value||dateStart;
+  const note=document.getElementById('lf-note').value.trim();
+  const errEl=document.getElementById('lf-err');
+  if(!memberName){errEl.textContent='팀원을 선택해주세요.';return;}
+  if(!dateStart){errEl.textContent='날짜를 입력해주세요.';return;}
+  if(dateEnd<dateStart){errEl.textContent='종료일이 시작일보다 빠를 수 없습니다.';return;}
+  errEl.textContent='';
+  S.leaves.push({id:uid(),memberName,type:selType,dateStart,dateEnd,note});
+  document.getElementById('lf-date-start').value='';
+  document.getElementById('lf-date-end').value='';
+  document.getElementById('lf-note').value='';
+  renderCalendar();renderLeaveList();updateCalNavCount();
+}
+
+function removeLeave(id){
+  S.leaves=S.leaves.filter(l=>l.id!==id);
+  renderCalendar();renderLeaveList();updateCalNavCount();
+  const modal=document.getElementById('modal-day');
+  if(modal.classList.contains('open')){
+    const ds=modal.getAttribute('data-date');
+    if(ds)openDayModal(ds);
   }
 }
 
-/* ─ Sync inputs → state ─ */
-function syncAll(){
-  S.name=document.getElementById('project-inp').value;
-  S.depts.forEach(dept=>{
-    const ni=document.querySelector(`[data-dn="${dept.id}"]`);
-    const ti=document.querySelector(`[data-dt="${dept.id}"]`);
-    if(ni) dept.name=ni.value;
-    if(ti) dept.target=parseInt(ti.value)||0;
-    dept.members.forEach((m,mi)=>{
-      const nn=document.querySelector(`[data-mn="${dept.id}-${mi}"]`);
-      const nr=document.querySelector(`[data-mr="${dept.id}-${mi}"]`);
-      if(nn) m.name=nn.value;
-      if(nr) m.role=nr.value;
+/* ── Calendar ── */
+function moveMonth(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();renderLeaveList();updateCalNavCount();
+}
+
+function leavesOn(dateStr){return S.leaves.filter(l=>l.dateStart<=dateStr&&l.dateEnd>=dateStr);}
+
+function renderCalendar(){
+  document.getElementById('cal-month-label').textContent=`${calYear}년 ${calMonth+1}월`;
+  const el=document.getElementById('cal-days');el.innerHTML='';
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const dip=new Date(calYear,calMonth,0).getDate();
+  const cells=[];
+  for(let i=firstDay-1;i>=0;i--)cells.push({day:dip-i,m:calMonth-1,y:calMonth===0?calYear-1:calYear,other:true});
+  for(let i=1;i<=dim;i++)cells.push({day:i,m:calMonth,y:calYear,other:false});
+  const rem=42-cells.length;
+  for(let i=1;i<=rem;i++)cells.push({day:i,m:calMonth+1,y:calMonth===11?calYear+1:calYear,other:true});
+
+  cells.forEach(cell=>{
+    const ds=`${cell.y}-${String(cell.m+1).padStart(2,'0')}-${String(cell.day).padStart(2,'0')}`;
+    const leaves=leavesOn(ds);
+    const div=document.createElement('div');
+    div.className='cal-day'+(cell.other?' other-month':'')+(ds===todayStr?' today':'');
+    div.onclick=()=>openDayModal(ds);
+    let html=`<div class="cal-dn-wrap"><div class="cal-dn">${cell.day}</div></div>`;
+    const max=3;
+    leaves.slice(0,max).forEach(l=>{
+      html+=`<div class="leave-chip ${LT[l.type].chip}">${LT[l.type].icon} ${esc(l.memberName)}</div>`;
     });
+    if(leaves.length>max)html+=`<div class="more-chip">+${leaves.length-max}명</div>`;
+    div.innerHTML=html;
+    el.appendChild(div);
   });
 }
 
-/* ─ Stats ─ */
-function stats(){
-  let t=0,c=0;
-  S.depts.forEach(d=>{t+=d.target;c+=d.members.length});
-  return{t,c,add:Math.max(0,t-c)};
+function openDayModal(dateStr){
+  const leaves=leavesOn(dateStr);
+  const d=new Date(dateStr+'T00:00:00');
+  document.getElementById('modal-day-title').textContent=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+  document.getElementById('modal-day').setAttribute('data-date',dateStr);
+  const list=document.getElementById('modal-day-list');
+  if(leaves.length===0){list.innerHTML='<div class="dd-empty">이 날 등록된 휴가가 없습니다</div>';}
+  else{
+    list.innerHTML='';
+    leaves.forEach(l=>{
+      const t=LT[l.type];const p=pal(memberPalIdx(l.memberName));
+      const item=document.createElement('div');item.className='dd-item';
+      item.innerHTML=`
+        <div style="width:26px;height:26px;border-radius:50%;background:${p.bg};color:${p.fg};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0">${ini(l.memberName)}</div>
+        <span class="dd-name">${esc(l.memberName)}</span>
+        <span class="dd-chip ${t.chip}">${t.icon} ${t.label}${l.note?' · '+esc(l.note):''}</span>
+        <button class="dd-del" onclick="removeLeave('${l.id}')">✕</button>`;
+      list.appendChild(item);
+    });
+  }
+  openModal('modal-day');
 }
 
-/* ─ Editor render ─ */
-function renderEditor(){
-  const {t,c,add}=stats();
+function renderLeaveList(){
+  const ym=`${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+  const leaves=S.leaves.filter(l=>l.dateStart.slice(0,7)===ym||l.dateEnd.slice(0,7)===ym)
+    .sort((a,b)=>a.dateStart.localeCompare(b.dateStart));
+  document.getElementById('ll-month-label').textContent=`${calMonth+1}월 휴가`;
+  document.getElementById('ll-count').textContent=leaves.length+'건';
+  const body=document.getElementById('ll-body');
+  if(leaves.length===0){body.innerHTML='<div class="ll-empty">등록된 휴가가 없습니다</div>';return;}
+  body.innerHTML='';
+  leaves.forEach(l=>{
+    const t=LT[l.type];const p=pal(memberPalIdx(l.memberName));
+    const dl=l.dateStart===l.dateEnd?l.dateStart:`${l.dateStart} ~ ${l.dateEnd}`;
+    const item=document.createElement('div');item.className='ll-item';
+    item.innerHTML=`
+      <div class="ll-av" style="background:${p.bg};color:${p.fg}">${ini(l.memberName)}</div>
+      <div class="ll-info">
+        <div class="ll-name">${t.icon} ${esc(l.memberName)} <span class="pill ${l.type==='annual'?'pb':l.type==='half'?'pg':'pa'}" style="font-size:10px">${t.label}</span></div>
+        <div class="ll-date">${dl}${l.note?' · '+esc(l.note):''}</div>
+      </div>
+      <button class="ll-del" onclick="removeLeave('${l.id}')">✕</button>`;
+    body.appendChild(item);
+  });
+}
+
+/* ── Members view (read-only) ── */
+function renderMembersView(){
+  const el=document.getElementById('members-view');
+  el.innerHTML='';
+  S.depts.forEach((d,di)=>{
+    const p=pal(di);const need=Math.max(0,d.target-d.members.length);
+    const sec=document.createElement('div');sec.style.cssText='margin-bottom:20px';
+    let html=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid var(--border)">
+      <div style="width:26px;height:26px;border-radius:var(--rsm);background:${p.bg};color:${p.fg};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600">${String(di+1).padStart(2,'0')}</div>
+      <span style="font-size:15px;font-weight:600;flex:1">${esc(d.name)}</span>
+      <span class="pill pn">${d.members.length}/${d.target}명</span>
+      ${need>0?`<span class="pill pa">+${need}명</span>`:'<span class="pill pg">충원 완료</span>'}
+    </div>
+    <div class="mgrid">`;
+    d.members.forEach(m=>{
+      html+=`<div class="mcard"><div class="mav-r" style="background:${p.bg};color:${p.fg}">${ini(m.name)}</div>
+        <div class="minfo"><div class="mname">${esc(m.name)}</div>${m.role?`<div class="mrole">${esc(m.role)}</div>`:''}</div></div>`;
+    });
+    for(let i=0;i<need;i++)html+=`<div class="mcard slot"><div class="mav-r" style="background:var(--surface2);color:var(--t3)">—</div><div class="minfo"><div class="mname" style="color:var(--t3)">충원 예정</div></div></div>`;
+    html+=`</div>`;
+    sec.innerHTML=html;el.appendChild(sec);
+  });
+}
+
+/* ═══════════════════════
+   ADMIN ROSTER
+═══════════════════════ */
+function renderAdmin(){
+  const{t,c,add}=rosterStats();
   document.getElementById('e-target').textContent=t+'명';
   document.getElementById('e-current').textContent=c+'명';
   document.getElementById('e-add').textContent='+'+add+'명';
-  document.getElementById('sb-project-name').textContent=S.name||'XP HERO';
-
   // Nav
-  const nav=document.getElementById('sb-nav');
-  nav.innerHTML='';
+  const nav=document.getElementById('admin-nav');nav.innerHTML='';
   S.depts.forEach((d,di)=>{
-    const b=document.createElement('button');
-    b.className='nav-btn';
-    b.innerHTML=`<span class="nav-num">${String(di+1).padStart(2,'0')}</span><span class="nav-lbl">${esc(d.name)}</span><span class="nav-cnt">${d.members.length}/${d.target}</span>`;
-    b.onclick=()=>document.getElementById('s-'+d.id)?.scrollIntoView({behavior:'smooth',block:'start'});
-    nav.appendChild(b);
+    const btn=document.createElement('button');btn.className='nav-btn';
+    btn.innerHTML=`<span class="nav-lbl">${esc(d.name)}</span><span class="nav-cnt">${d.members.length}/${d.target}</span>`;
+    btn.onclick=()=>document.getElementById('ds-'+d.id)?.scrollIntoView({behavior:'smooth',block:'start'});
+    nav.appendChild(btn);
   });
-
   // Dept cards
-  const list=document.getElementById('dept-list');
-  list.innerHTML='';
+  const list=document.getElementById('dept-list');list.innerHTML='';
   S.depts.forEach((d,di)=>{
-    const p=pal(di);
-    const need=Math.max(0,d.target-d.members.length);
-    const card=document.createElement('div');
-    card.className='dc'; card.id='s-'+d.id;
-
-    // Header
-    const hd=document.createElement('div');
-    hd.className='dc-head';
+    const p=pal(di);const need=Math.max(0,d.target-d.members.length);
+    const card=document.createElement('div');card.className='dc';card.id='ds-'+d.id;
+    const hd=document.createElement('div');hd.className='dc-head';
     hd.innerHTML=`
       <div class="dc-idx" style="background:${p.bg};color:${p.fg}">${String(di+1).padStart(2,'0')}</div>
       <input class="dc-name-inp" data-dn="${d.id}" value="${esc(d.name)}" placeholder="팀 이름" oninput="onFieldChange()">
       <div class="dc-right">
-        <div class="target-grp">
-          <span class="tgt-lbl">목표</span>
+        <div class="target-grp"><span class="tgt-lbl">목표</span>
           <input class="tgt-inp" type="number" min="0" data-dt="${d.id}" value="${d.target}" oninput="onFieldChange()">
-          <span class="tgt-lbl">명</span>
-        </div>
-        <span class="pill ${need>0?'pa':'pg'}">${need>0?'+'+need+'명 필요':'충원 완료'}</span>
-        <button class="icon-btn" onclick="removeDept('${d.id}')" title="팀 삭제">✕</button>
+          <span class="tgt-lbl">명</span></div>
+        <span class="pill ${need>0?'pa':'pg'}">${need>0?'+'+need+'명':'완료'}</span>
+        <button class="icon-btn" onclick="removeDept('${d.id}')">✕</button>
       </div>`;
     card.appendChild(hd);
-
-    // Body
-    const body=document.createElement('div');
-    body.className='dc-body';
+    const body=document.createElement('div');body.className='dc-body';
     d.members.forEach((m,mi)=>{
-      const row=document.createElement('div');
-      row.className='mrow';
+      const row=document.createElement('div');row.className='mrow';
       row.innerHTML=`
         <div class="av" style="background:${p.bg};color:${p.fg}" id="av-${d.id}-${mi}">${ini(m.name)}</div>
         <input class="m-name-inp" data-mn="${d.id}-${mi}" value="${esc(m.name)}" placeholder="이름" oninput="onNameInput(this,'${d.id}',${mi})">
         <div class="divv"></div>
         <input class="m-role-inp" data-mr="${d.id}-${mi}" value="${esc(m.role)}" placeholder="담당 업무 (선택)">
-        <button class="icon-btn" onclick="removeMember('${d.id}',${mi})" title="삭제">✕</button>`;
+        <button class="icon-btn" onclick="removeMember('${d.id}',${mi})">✕</button>`;
       body.appendChild(row);
     });
-    const addBtn=document.createElement('button');
-    addBtn.className='add-member-btn';
-    addBtn.textContent='+ 멤버 추가';
-    addBtn.onclick=()=>addMember(d.id);
-    body.appendChild(addBtn);
-    card.appendChild(body);
-    list.appendChild(card);
+    const ab=document.createElement('button');ab.className='add-member-btn';ab.textContent='+ 멤버 추가';
+    ab.onclick=()=>addMember(d.id);body.appendChild(ab);
+    card.appendChild(body);list.appendChild(card);
   });
 }
 
+function rosterStats(){
+  let t=0,c=0;S.depts.forEach(d=>{t+=d.target;c+=d.members.length;});return{t,c,add:Math.max(0,t-c)};
+}
+function syncAll(){
+  const pInp=document.getElementById('project-inp');if(pInp)S.name=pInp.value;
+  S.depts.forEach(dept=>{
+    const ni=document.querySelector(`[data-dn="${dept.id}"]`);
+    const ti=document.querySelector(`[data-dt="${dept.id}"]`);
+    if(ni)dept.name=ni.value;if(ti)dept.target=parseInt(ti.value)||0;
+    dept.members.forEach((m,mi)=>{
+      const nn=document.querySelector(`[data-mn="${dept.id}-${mi}"]`);
+      const nr=document.querySelector(`[data-mr="${dept.id}-${mi}"]`);
+      if(nn)m.name=nn.value;if(nr)m.role=nr.value;
+    });
+  });
+}
 function onFieldChange(){
-  syncAll();
-  const {t,c,add}=stats();
+  syncAll();const{t,c,add}=rosterStats();
   document.getElementById('e-target').textContent=t+'명';
   document.getElementById('e-current').textContent=c+'명';
   document.getElementById('e-add').textContent='+'+add+'명';
-  // update nav
-  const btns=document.querySelectorAll('#sb-nav .nav-btn');
-  S.depts.forEach((d,di)=>{
-    const cnt=btns[di]?.querySelector('.nav-cnt');
-    if(cnt) cnt.textContent=`${d.members.length}/${d.target}`;
-  });
 }
-
-function onProjectName(){
-  S.name=document.getElementById('project-inp').value;
-  document.getElementById('sb-project-name').textContent=S.name||'XP HERO';
-}
-
-function onNameInput(inp,deptId,mi){
-  const av=document.getElementById(`av-${deptId}-${mi}`);
-  if(av) av.textContent=ini(inp.value);
-}
-
-/* ─ Actions ─ */
-function addMember(deptId){
-  syncAll();
-  S.depts.find(d=>d.id===deptId).members.push({name:'',role:''});
-  renderEditor();
-  const rows=document.querySelectorAll(`#s-${deptId} .mrow`);
-  rows[rows.length-1]?.querySelector('input')?.focus();
-}
-function removeMember(deptId,mi){
-  syncAll();
-  S.depts.find(d=>d.id===deptId).members.splice(mi,1);
-  renderEditor();
-}
-function removeDept(deptId){
-  syncAll();
-  S.depts=S.depts.filter(d=>d.id!==deptId);
-  renderEditor();
-}
-function openAddDept(){
-  document.getElementById('m-dept-name').value='';
-  document.getElementById('m-dept-target').value='5';
-  openModal('modal-dept');
-  setTimeout(()=>document.getElementById('m-dept-name').focus(),120);
-}
+function onProjectName(){S.name=document.getElementById('project-inp').value;}
+function onNameInput(inp,deptId,mi){const av=document.getElementById(`av-${deptId}-${mi}`);if(av)av.textContent=ini(inp.value);}
+function addMember(deptId){syncAll();S.depts.find(d=>d.id===deptId).members.push({name:'',role:''});renderAdmin();const rows=document.querySelectorAll(`#ds-${deptId} .mrow`);rows[rows.length-1]?.querySelector('input')?.focus();updateMemberSelect();}
+function removeMember(deptId,mi){syncAll();S.depts.find(d=>d.id===deptId).members.splice(mi,1);renderAdmin();updateMemberSelect();}
+function removeDept(deptId){syncAll();S.depts=S.depts.filter(d=>d.id!==deptId);renderAdmin();updateMemberSelect();}
+function openAddDept(){document.getElementById('m-dept-name').value='';document.getElementById('m-dept-target').value='5';openModal('modal-dept');setTimeout(()=>document.getElementById('m-dept-name').focus(),100);}
 function confirmAddDept(){
-  const name=document.getElementById('m-dept-name').value.trim();
-  const target=parseInt(document.getElementById('m-dept-target').value)||5;
-  if(!name) return;
-  syncAll();
-  S.depts.push({id:uid(),name,target,members:[]});
-  closeModal('modal-dept');
-  renderEditor();
+  const name=document.getElementById('m-dept-name').value.trim();const target=parseInt(document.getElementById('m-dept-target').value)||5;
+  if(!name)return;syncAll();S.depts.push({id:uid(),name,target,members:[]});closeModal('modal-dept');renderAdmin();updateMemberSelect();
 }
 
-/* ─ Share modal ─ */
-const LAST_REPORT_KEY='xphero_last_report';
+/* ═══════════════════════
+   SHARE
+═══════════════════════ */
 let _shareUrl='';
-
 function openShareModal(){
   syncAll();
-  const encoded=encode(S);
-  _shareUrl=location.href.split('#')[0]+'#report='+encoded;
-  // Save for "최근 보고서 보기" on login page
-  try{ localStorage.setItem(LAST_REPORT_KEY, _shareUrl); }catch{}
-  updateLoginReportBtn();
+  _shareUrl=location.href.split('#')[0]+'#report='+encode(S);
   document.getElementById('share-url-box').textContent=_shareUrl;
   document.getElementById('copy-note').textContent='클릭하면 클립보드에 복사됩니다';
   document.getElementById('btn-copy').textContent='링크 복사';
   openModal('modal-share');
 }
-
-function openLastReport(){
-  try{
-    const url=localStorage.getItem(LAST_REPORT_KEY);
-    if(url){ location.href=url; }
-  }catch{}
-}
-
-function updateLoginReportBtn(){
-  const btn=document.getElementById('btn-view-report');
-  if(!btn) return;
-  try{
-    const url=localStorage.getItem(LAST_REPORT_KEY);
-    if(url){
-      btn.classList.remove('disabled');
-      btn.textContent='최근 보고서 보기 →';
-    } else {
-      btn.classList.add('disabled');
-      btn.textContent='보고서 없음 (공유 링크 생성 후 표시)';
-      btn.onclick=null;
-    }
-  }catch{
-    btn.classList.add('disabled');
-  }
-}
 function copyUrl(){
   navigator.clipboard.writeText(_shareUrl).then(()=>{
     document.getElementById('btn-copy').textContent='✓ 복사됨!';
     document.getElementById('copy-note').textContent='링크가 클립보드에 복사되었습니다';
-  }).catch(()=>{
-    document.getElementById('copy-note').textContent='직접 선택 후 복사해 주세요';
-  });
+  }).catch(()=>{document.getElementById('copy-note').textContent='직접 선택 후 복사해 주세요';});
 }
 
-/* ─ Modal helpers ─ */
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id)}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>closeModal(el.id))});
-
-/* ─ Report render ─ */
+/* ═══════════════════════
+   REPORT RENDER
+═══════════════════════ */
 function renderReport(data){
-  let t=0,c=0;
-  data.depts.forEach(d=>{t+=d.target;c+=d.members.length});
-  const add=Math.max(0,t-c);
-  const pct=t>0?Math.round(c/t*100):0;
+  let t=0,c=0;data.depts.forEach(d=>{t+=d.target;c+=d.members.length;});
+  const add=Math.max(0,t-c);const pct=t>0?Math.round(c/t*100):0;
   const dateStr=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric'}).format(new Date());
+  const leaves=data.leaves||[];
+  const now=new Date();const ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const thisMonthLeaves=leaves.filter(l=>l.dateStart.slice(0,7)===ym||l.dateEnd.slice(0,7)===ym).sort((a,b)=>a.dateStart.localeCompare(b.dateStart));
 
   let html=`
     <div class="rp-header">
       <div>
-        <div class="eyebrow">Team Roster Report</div>
+        <div class="eyebrow">XP 인원관리</div>
         <div class="rp-title">${esc(data.name)}</div>
         <div class="rp-date">${dateStr} 기준</div>
       </div>
       <div class="rp-actions no-print">
-        <button class="btn-back" id="rp-back-btn">← 편집으로 돌아가기</button>
-        <button class="btn-back" onclick="openShareModal()">🔗 링크 공유</button>
+        <button class="btn-back" onclick="history.back()">← 돌아가기</button>
+        <button class="btn-back" onclick="openShareModal()">🔗 공유</button>
         <button class="btn-print" onclick="window.print()">인쇄 / PDF</button>
       </div>
     </div>
     <div class="rsum">
-      <div class="rsc"><div class="rsc-lbl">목표 인원</div><div class="rsc-val">${t}<span style="font-size:17px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">전체 팀 목표</div></div>
-      <div class="rsc"><div class="rsc-lbl">현재 인원</div><div class="rsc-val g">${c}<span style="font-size:17px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">확보된 인원</div></div>
-      <div class="rsc"><div class="rsc-lbl">추가 필요</div><div class="rsc-val a">+${add}<span style="font-size:17px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">충원 필요 인원</div></div>
+      <div class="rsc"><div class="rsc-lbl">목표 인원</div><div class="rsc-val">${t}<span style="font-size:15px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">전체 목표</div></div>
+      <div class="rsc"><div class="rsc-lbl">현재 인원</div><div class="rsc-val g">${c}<span style="font-size:15px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">확보 인원</div></div>
+      <div class="rsc"><div class="rsc-lbl">추가 필요</div><div class="rsc-val a">+${add}<span style="font-size:15px;font-weight:400;color:var(--t3)">명</span></div><div class="rsc-sub">충원 필요</div></div>
     </div>
     <div class="prog-wrap">
       <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
       <div class="prog-meta"><span>팀 구성 진행률</span><span>${c} / ${t}명 (${pct}%)</span></div>
     </div>
-
     <div class="sec-lbl">팀별 현황</div>
-    <table class="ov-table">
-      <thead><tr><th>#</th><th>팀</th><th>목표</th><th>현재</th><th>충원 필요</th><th style="min-width:130px">진행률</th></tr></thead>
-      <tbody>`;
-
+    <table class="ov-table"><thead><tr><th>#</th><th>팀</th><th>목표</th><th>현재</th><th>충원 필요</th><th>진행률</th></tr></thead><tbody>`;
   data.depts.forEach((d,di)=>{
-    const cur=d.members.length;
-    const need=Math.max(0,d.target-cur);
-    const p=d.target>0?Math.round(cur/d.target*100):100;
-    html+=`<tr>
-      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">${String(di+1).padStart(2,'0')}</td>
-      <td style="font-weight:500">${esc(d.name)}</td>
-      <td style="font-family:'DM Mono',monospace">${d.target}명</td>
+    const cur=d.members.length;const need=Math.max(0,d.target-cur);const p=d.target>0?Math.round(cur/d.target*100):100;
+    html+=`<tr><td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">${String(di+1).padStart(2,'0')}</td>
+      <td style="font-weight:500">${esc(d.name)}</td><td style="font-family:'DM Mono',monospace">${d.target}명</td>
       <td><span class="pill pg">${cur}명</span></td>
       <td>${need>0?`<span class="pill pa">+${need}명</span>`:`<span class="pill pn">완료</span>`}</td>
-      <td><div class="mini-wrap"><div class="mini-track"><div class="mini-fill" style="width:${p}%"></div></div><span class="mini-pct">${p}%</span></div></td>
-    </tr>`;
+      <td><div class="mini-wrap"><div class="mini-track"><div class="mini-fill" style="width:${p}%"></div></div><span class="mini-pct">${p}%</span></div></td></tr>`;
   });
-  html+=`</tbody></table>
-
-    <div class="sec-lbl">멤버 상세</div>`;
-
+  html+=`</tbody></table><div class="sec-lbl">멤버 상세</div>`;
   data.depts.forEach((d,di)=>{
-    const p=pal(di);
-    const cur=d.members.length;
-    const need=Math.max(0,d.target-cur);
-    html+=`<div class="dept-sec">
-      <div class="dept-sec-head">
-        <span class="dsec-idx">${String(di+1).padStart(2,'0')}</span>
-        <span class="dsec-name">${esc(d.name)}</span>
-        <div class="dsec-pills">
-          <span class="pill pn">목표 ${d.target}명</span>
-          <span class="pill pg">현재 ${cur}명</span>
-          ${need>0?`<span class="pill pa">+${need}명 필요</span>`:''}
-        </div>
-      </div>
-      <div class="mgrid">`;
-    d.members.forEach(m=>{
-      html+=`<div class="mcard">
-        <div class="mav" style="background:${p.bg};color:${p.fg}">${ini(m.name)}</div>
-        <div class="minfo">
-          <div class="mname">${esc(m.name)||'—'}</div>
-          ${m.role?`<div class="mrole">${esc(m.role)}</div>`:''}
-        </div>
-      </div>`;
-    });
-    for(let i=0;i<need;i++){
-      html+=`<div class="mcard slot">
-        <div class="mav" style="background:var(--surface2);color:var(--t3)">—</div>
-        <div class="minfo"><div class="mname" style="color:var(--t3)">충원 예정</div></div>
-      </div>`;
-    }
+    const p=pal(di);const cur=d.members.length;const need=Math.max(0,d.target-cur);
+    html+=`<div class="dept-sec"><div class="dept-sec-head"><span class="dsec-idx">${String(di+1).padStart(2,'0')}</span>
+      <span class="dsec-name">${esc(d.name)}</span>
+      <div class="dsec-pills"><span class="pill pn">목표 ${d.target}명</span><span class="pill pg">현재 ${cur}명</span>${need>0?`<span class="pill pa">+${need}명</span>`:''}</div>
+    </div><div class="mgrid">`;
+    d.members.forEach(m=>{html+=`<div class="mcard"><div class="mav-r" style="background:${p.bg};color:${p.fg}">${ini(m.name)}</div><div class="minfo"><div class="mname">${esc(m.name)}</div>${m.role?`<div class="mrole">${esc(m.role)}</div>`:''}</div></div>`;});
+    for(let i=0;i<need;i++)html+=`<div class="mcard slot"><div class="mav-r" style="background:var(--surface2);color:var(--t3)">—</div><div class="minfo"><div class="mname" style="color:var(--t3)">충원 예정</div></div></div>`;
     html+=`</div></div>`;
   });
 
-  html+=`<div class="rfooter">
-    <span class="rfooter-note">${esc(data.name)} 팀 인원 구성 현황 · ${dateStr}</span>
-    <span class="rfooter-badge">CONFIDENTIAL</span>
-  </div>`;
+  html+=`<div class="sec-lbl" style="margin-top:28px">${now.getMonth()+1}월 휴가 현황</div>
+  <table class="ov-table"><thead><tr><th>팀원</th><th>유형</th><th>날짜</th><th>메모</th></tr></thead><tbody>`;
+  if(thisMonthLeaves.length===0){
+    html+=`<tr><td colspan="4" style="text-align:center;color:var(--t3);font-size:12px;padding:16px">이번 달 등록된 휴가가 없습니다</td></tr>`;
+  } else {
+    thisMonthLeaves.forEach(l=>{
+      const lt=LT[l.type];const dl=l.dateStart===l.dateEnd?l.dateStart:`${l.dateStart} ~ ${l.dateEnd}`;
+      html+=`<tr><td style="font-weight:500">${esc(l.memberName)}</td>
+        <td><span class="pill ${l.type==='annual'?'pb':l.type==='half'?'pg':'pa'}">${lt.icon} ${lt.label}</span></td>
+        <td style="font-family:'DM Mono',monospace;font-size:11px">${dl}</td>
+        <td style="font-size:11px;color:var(--t3)">${esc(l.note)||'—'}</td></tr>`;
+    });
+  }
+  html+=`</tbody></table>
+  <div class="rfooter"><span class="rfooter-note">${esc(data.name)} XP 인원관리 · ${dateStr}</span><span class="rfooter-badge">CONFIDENTIAL</span></div>`;
 
   document.getElementById('rpage').innerHTML=html;
-  document.title=`${data.name} — 팀 인원 구성`;
-
-  // Wire back button based on login state
-  const backBtn=document.getElementById('rp-back-btn');
-  if(backBtn){
-    if(isLoggedIn()){
-      backBtn.textContent='← 편집으로 돌아가기';
-      backBtn.onclick=goEditor;
-    } else {
-      backBtn.textContent='← 로그인';
-      backBtn.onclick=()=>showView('login');
-    }
-  }
+  document.title=`${data.name} — XP 인원관리`;
 }
 
-/* ─ Init ─ */
-updateLoginReportBtn();
+/* ═══════════════════════
+   MODAL HELPERS
+═══════════════════════ */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>closeModal(el.id));});
+
+/* ═══════════════════════
+   INIT
+═══════════════════════ */
 route();
-if(!location.hash || location.hash==='#'){
-  if(!isLoggedIn()) showView('login');
-}
 </script>
 </body>
 </html>
