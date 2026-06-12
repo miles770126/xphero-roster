@@ -484,10 +484,17 @@ let S={
 };
 
 /* ═══════════════════════
+   ★ API 설정
+   Apps Script 배포 후 아래 URL 입력
+═══════════════════════ */
+const API_URL = ''; // ← Apps Script 웹앱 URL 붙여넣기
+
+/* ═══════════════════════
    AUTH
 ═══════════════════════ */
 const AUTH={id:'master',pw:'12345!'};
 const SESS='xphero_admin';
+
 function isAdmin(){return sessionStorage.getItem(SESS)==='ok';}
 
 function goAdminLogin(){showView('login');setTimeout(()=>document.getElementById('login-id').focus(),100);}
@@ -599,7 +606,45 @@ function selectLeaveType(type){
   });
 }
 
-function addLeave(){
+/* ── API helpers ── */
+function apiCall(params){
+  if(!API_URL){
+    // API URL 미설정 시 메모리 모드로 동작
+    return Promise.resolve(null);
+  }
+  const url=API_URL+'?'+new URLSearchParams(params).toString();
+  return fetch(url).then(r=>r.json()).catch(()=>null);
+}
+
+function showToast(msg, isError=false){
+  let t=document.getElementById('xp-toast');
+  if(!t){
+    t=document.createElement('div');t.id='xp-toast';
+    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;transition:opacity .3s;pointer-events:none;font-family:DM Sans,sans-serif';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.style.background=isError?'#8B1A1A':'#111110';
+  t.style.color='#fff';
+  t.style.opacity='1';
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.style.opacity='0',2500);
+}
+
+async function loadLeaves(){
+  if(!API_URL){showToast('⚠ API URL 미설정 — 임시 저장 모드',true);return;}
+  showToast('데이터 불러오는 중...');
+  const res=await apiCall({action:'getAll'});
+  if(res&&res.leaves){
+    S.leaves=res.leaves;
+    renderCalendar();renderLeaveList();updateCalNavCount();
+    showToast('✓ 데이터 로드 완료');
+  } else {
+    showToast('데이터 로드 실패 — 임시 모드로 동작',true);
+  }
+}
+
+async function addLeave(){
   const memberName=document.getElementById('lf-member').value;
   const dateStart=document.getElementById('lf-date-start').value;
   const dateEnd=document.getElementById('lf-date-end').value||dateStart;
@@ -609,15 +654,42 @@ function addLeave(){
   if(!dateStart){errEl.textContent='날짜를 입력해주세요.';return;}
   if(dateEnd<dateStart){errEl.textContent='종료일이 시작일보다 빠를 수 없습니다.';return;}
   errEl.textContent='';
-  S.leaves.push({id:uid(),memberName,type:selType,dateStart,dateEnd,note});
+
+  const newLeave={id:uid(),memberName,type:selType,dateStart,dateEnd,note};
+
+  if(API_URL){
+    showToast('저장 중...');
+    const res=await apiCall({action:'add',...newLeave});
+    if(res&&res.ok){
+      S.leaves.push(newLeave);
+      showToast('✓ 등록되었습니다');
+    } else {
+      showToast('저장 실패. 다시 시도해주세요.',true);return;
+    }
+  } else {
+    S.leaves.push(newLeave);
+    showToast('등록됨 (임시 저장 — API 미설정)');
+  }
+
   document.getElementById('lf-date-start').value='';
   document.getElementById('lf-date-end').value='';
   document.getElementById('lf-note').value='';
   renderCalendar();renderLeaveList();updateCalNavCount();
 }
 
-function removeLeave(id){
-  S.leaves=S.leaves.filter(l=>l.id!==id);
+async function removeLeave(id){
+  if(API_URL){
+    showToast('삭제 중...');
+    const res=await apiCall({action:'delete',id});
+    if(res&&res.ok){
+      S.leaves=S.leaves.filter(l=>l.id!==id);
+      showToast('✓ 삭제되었습니다');
+    } else {
+      showToast('삭제 실패. 다시 시도해주세요.',true);return;
+    }
+  } else {
+    S.leaves=S.leaves.filter(l=>l.id!==id);
+  }
   renderCalendar();renderLeaveList();updateCalNavCount();
   const modal=document.getElementById('modal-day');
   if(modal.classList.contains('open')){
@@ -925,6 +997,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
    INIT
 ═══════════════════════ */
 route();
+// 페이지 로드 시 저장된 휴가 데이터 불러오기
+if(!location.hash||!location.hash.startsWith('#report=')){
+  loadLeaves();
+}
 </script>
 </body>
 </html>
