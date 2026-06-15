@@ -487,7 +487,7 @@ let S={
    ★ API 설정
    Apps Script 배포 후 아래 URL 입력
 ═══════════════════════ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxyr2234SAWC_7mdooyrheZxW9Ccv7fvN0tvtDnh5HY375CLHGK6mQCHfiUbS4UAL5s/exec'; // ← Apps Script 웹앱 URL 붙여넣기
+const API_URL = ''; // ← Apps Script 웹앱 URL 붙여넣기
 
 /* ═══════════════════════
    AUTH
@@ -512,7 +512,21 @@ function doLogin(){
   }
 }
 function adminLogout(){sessionStorage.removeItem(SESS);showView('leave');}
-function saveAndReturn(){syncAll();showView('leave');renderLeaveTab();}
+async function saveAndReturn(){
+  syncAll();
+  if(API_URL){
+    showToast('인원 구성 저장 중...');
+    const rosterData={name:S.name,depts:S.depts};
+    const res=await apiCall({action:'saveRoster',data:JSON.stringify(rosterData)});
+    if(res&&res.ok){
+      showToast('✓ 인원 구성이 저장되었습니다');
+    } else {
+      showToast('저장 실패. 다시 시도해주세요.',true);return;
+    }
+  }
+  showView('leave');
+  renderLeaveTab();
+}
 
 /* ═══════════════════════
    ENCODE / DECODE / ROUTING
@@ -648,13 +662,19 @@ function showToast(msg, isError=false){
   t._timer=setTimeout(()=>t.style.opacity='0',2500);
 }
 
-async function loadLeaves(){
+async function loadAll(){
   if(!API_URL){showToast('⚠ API URL 미설정 — 임시 저장 모드',true);return;}
   showToast('데이터 불러오는 중...');
   const res=await apiCall({action:'getAll'});
-  if(res&&res.leaves){
-    S.leaves=res.leaves;
-    renderCalendar();renderLeaveList();updateCalNavCount();
+  if(res){
+    // 휴가 데이터 로드
+    if(res.leaves) S.leaves=res.leaves;
+    // 인원 구성 로드
+    if(res.roster){
+      S.name=res.roster.name||S.name;
+      S.depts=res.roster.depts||S.depts;
+    }
+    renderLeaveTab();
     showToast('✓ 데이터 로드 완료');
   } else {
     showToast('데이터 로드 실패 — 임시 모드로 동작',true);
@@ -676,7 +696,7 @@ async function addLeave(){
 
   if(API_URL){
     showToast('저장 중...');
-    const res=await apiCall({action:'add',...newLeave});
+    const res=await apiCall({action:'addLeave',...newLeave});
     if(res&&res.ok){
       S.leaves.push(newLeave);
       showToast('✓ 등록되었습니다');
@@ -697,7 +717,7 @@ async function addLeave(){
 async function removeLeave(id){
   if(API_URL){
     showToast('삭제 중...');
-    const res=await apiCall({action:'delete',id});
+    const res=await apiCall({action:'deleteLeave',id});
     if(res&&res.ok){
       S.leaves=S.leaves.filter(l=>l.id!==id);
       showToast('✓ 삭제되었습니다');
@@ -1014,9 +1034,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
    INIT
 ═══════════════════════ */
 route();
-// 페이지 로드 시 저장된 휴가 데이터 불러오기
 if(!location.hash||!location.hash.startsWith('#report=')){
-  loadLeaves();
+  loadAll();
 }
 </script>
 </body>
