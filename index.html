@@ -487,7 +487,7 @@ let S={
    ★ API 설정
    Apps Script 배포 후 아래 URL 입력
 ═══════════════════════ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxyr2234SAWC_7mdooyrheZxW9Ccv7fvN0tvtDnh5HY375CLHGK6mQCHfiUbS4UAL5s/exec'; // ← Apps Script 웹앱 URL 붙여넣기
+const API_URL = ''; // ← Apps Script 웹앱 URL 붙여넣기
 
 /* ═══════════════════════
    AUTH
@@ -606,14 +606,31 @@ function selectLeaveType(type){
   });
 }
 
-/* ── API helpers ── */
+/* ── API helpers (JSONP — CORS 우회) ── */
 function apiCall(params){
-  if(!API_URL){
-    // API URL 미설정 시 메모리 모드로 동작
-    return Promise.resolve(null);
-  }
-  const url=API_URL+'?'+new URLSearchParams(params).toString();
-  return fetch(url).then(r=>r.json()).catch(()=>null);
+  if(!API_URL) return Promise.resolve(null);
+  return new Promise((resolve)=>{
+    const cbName='_xpcb_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    const timeout=setTimeout(()=>{
+      delete window[cbName];
+      const s=document.getElementById(cbName);
+      if(s)s.remove();
+      resolve(null);
+    },10000);
+    window[cbName]=(data)=>{
+      clearTimeout(timeout);
+      delete window[cbName];
+      const s=document.getElementById(cbName);
+      if(s)s.remove();
+      resolve(data);
+    };
+    const p=new URLSearchParams({...params,callback:cbName});
+    const s=document.createElement('script');
+    s.id=cbName;
+    s.src=API_URL+'?'+p.toString();
+    s.onerror=()=>{clearTimeout(timeout);delete window[cbName];s.remove();resolve(null);};
+    document.head.appendChild(s);
+  });
 }
 
 function showToast(msg, isError=false){
